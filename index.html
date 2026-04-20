@@ -7,188 +7,224 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Snake Tracker">
+<meta name="apple-mobile-web-app-title" content="ReptilEden">
 <link rel="manifest" href="manifest.json">
-<title>Snake Tracker</title>
+<title>ReptilEden</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0c0e;
-  --bg2: #111114;
-  --card: #16161a;
-  --card2: #1c1c22;
-  --card3: #222228;
-  --gold: #c9a84c;
-  --gold2: #e8c96a;
-  --gold3: #f0dfa0;
-  --cream: #f2ede4;
-  --muted: #6b6b7a;
-  --muted2: #44444f;
-  --danger: #e05555;
-  --warn: #d4892a;
-  --ok: #3fa06e;
-  --text: #ede9e0;
-  --border: rgba(201,168,76,0.12);
-  --border2: rgba(255,255,255,0.06);
-  --r: 20px;
-  --r2: 14px;
-  --r3: 10px;
+  --bg:#0c0c0e; --card:#16161a; --card2:#1c1c22; --card3:#222228;
+  --gold:#c9a84c; --gold2:#e8c96a; --gold3:#f0dfa0;
+  --cream:#f2ede4; --muted:#6b6b7a; --muted2:#44444f;
+  --danger:#e05555; --warn:#d4892a; --ok:#3fa06e; --text:#ede9e0;
+  --border:rgba(201,168,76,0.12); --border2:rgba(255,255,255,0.06);
+  --r:20px; --r2:14px; --r3:10px;
 }
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:400; min-height:100dvh; overflow-x:hidden; }
-.app { max-width:430px; margin:0 auto; min-height:100dvh; display:flex; flex-direction:column; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:400;min-height:100dvh;overflow-x:hidden;}
+.app{max-width:430px;margin:0 auto;min-height:100dvh;display:flex;flex-direction:column;}
 
-.header {
-  padding:54px 22px 18px;
-  background:linear-gradient(180deg,#0c0c0e 0%,rgba(12,12,14,0.95) 100%);
-  backdrop-filter:blur(20px);
-  position:sticky; top:0; z-index:100;
-  display:flex; align-items:flex-end; justify-content:space-between;
-  border-bottom:1px solid var(--border2);
-}
-.header-wordmark { font-family:'DM Serif Display',serif; font-size:26px; color:var(--cream); letter-spacing:-0.3px; line-height:1; }
-.header-wordmark span { color:var(--gold2); font-style:italic; }
-.header-sub { font-size:11px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-top:3px; }
-.notif-btn { width:38px; height:38px; border:1px solid var(--border); background:var(--card2); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.2s; }
-.notif-btn:active { transform:scale(0.88); }
-.notif-btn.active { border-color:var(--gold); background:rgba(201,168,76,0.1); }
+/* HEADER */
+.header{padding:54px 16px 14px;background:linear-gradient(180deg,#0c0c0e 0%,rgba(12,12,14,0.95) 100%);backdrop-filter:blur(20px);position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border2);}
+.header-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;}
+.wordmark{font-family:'DM Serif Display',serif;font-size:24px;color:var(--cream);letter-spacing:-0.3px;line-height:1;}
+.wordmark span{color:var(--gold2);font-style:italic;}
+.header-actions{display:flex;gap:8px;}
+.icon-btn{width:36px;height:36px;border:1px solid var(--border);background:var(--card2);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:all 0.2s;flex-shrink:0;}
+.icon-btn:active{transform:scale(0.88);}
+.icon-btn.active{border-color:var(--gold);background:rgba(201,168,76,0.1);}
 
-.nav-bar {
-  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
-  width:calc(100% - 32px); max-width:398px;
-  background:rgba(22,22,26,0.92); backdrop-filter:blur(24px);
-  border:1px solid var(--border2); border-radius:28px;
-  display:flex; padding:6px; gap:4px; z-index:200;
-  box-shadow:0 8px 32px rgba(0,0,0,0.5);
-}
-.nav-btn { flex:1; padding:9px 4px 7px; background:none; border:none; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:10px; font-weight:500; letter-spacing:0.3px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; border-radius:22px; transition:all 0.2s; text-transform:uppercase; }
-.nav-btn .ico { font-size:18px; line-height:1; }
-.nav-btn.active { background:var(--card3); color:var(--gold2); }
-.nav-btn:active { opacity:0.6; }
+/* REPTILE SELECTOR */
+.reptile-selector{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.reptile-selector::-webkit-scrollbar{display:none;}
+.rep-chip{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:20px;border:1px solid var(--border2);background:var(--card2);cursor:pointer;white-space:nowrap;transition:all 0.2s;font-size:13px;color:var(--muted);}
+.rep-chip.active{border-color:var(--gold);background:rgba(201,168,76,0.1);color:var(--gold2);}
+.rep-chip .rep-icon{font-size:16px;}
+.rep-chip-add{border-style:dashed;color:var(--muted2);}
+.rep-chip-add:active{background:var(--card3);}
 
-.content { flex:1; padding:16px 16px 96px; overflow-y:auto; }
-.page { display:none; animation:fadeUp 0.28s cubic-bezier(.4,0,.2,1); }
-.page.active { display:block; }
-@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+/* NAV */
+.nav-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:398px;background:rgba(22,22,26,0.92);backdrop-filter:blur(24px);border:1px solid var(--border2);border-radius:28px;display:flex;padding:6px;gap:4px;z-index:200;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
+.nav-btn{flex:1;padding:9px 4px 7px;background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:10px;font-weight:500;letter-spacing:0.3px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;border-radius:22px;transition:all 0.2s;text-transform:uppercase;}
+.nav-btn .ico{font-size:18px;line-height:1;}
+.nav-btn.active{background:var(--card3);color:var(--gold2);}
+.nav-btn:active{opacity:0.6;}
 
-.card { background:var(--card); border:1px solid var(--border2); border-radius:var(--r); padding:18px; margin-bottom:12px; position:relative; overflow:hidden; }
-.card-label { font-size:10px; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px; }
-.card-label::before { content:''; width:12px; height:1px; background:var(--gold); opacity:0.6; display:inline-block; }
-.section-head { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
+/* CONTENT */
+.content{flex:1;padding:16px 16px 96px;overflow-y:auto;}
+.page{display:none;animation:fadeUp 0.28s cubic-bezier(.4,0,.2,1);}
+.page.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
-.hero-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:22px; margin-bottom:12px; position:relative; overflow:hidden; }
-.hero-card::after { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:radial-gradient(circle,rgba(201,168,76,0.09) 0%,transparent 70%); pointer-events:none; }
-.hero-snake-emoji { font-size:52px; line-height:1; margin-bottom:10px; display:block; }
-.hero-name { font-family:'DM Serif Display',serif; font-size:28px; color:var(--cream); line-height:1.1; }
-.hero-species { font-size:12px; color:var(--muted); margin-top:4px; letter-spacing:0.5px; }
-.hero-divider { height:1px; background:var(--border2); margin:16px 0; }
-.hero-stats { display:flex; }
-.hero-stat { flex:1; text-align:center; }
-.hero-stat + .hero-stat { border-left:1px solid var(--border2); }
-.hero-stat-val { font-family:'DM Serif Display',serif; font-size:24px; color:var(--gold2); }
-.hero-stat-val.danger { color:var(--danger); }
-.hero-stat-val.warn { color:var(--warn); }
-.hero-stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:2px; }
+/* CARDS */
+.card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:18px;margin-bottom:12px;position:relative;overflow:hidden;}
+.card-label{font-size:10px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.card-label::before{content:'';width:12px;height:1px;background:var(--gold);opacity:0.6;display:inline-block;}
+.section-head{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
 
-.alerts { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
-.alert-chip { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:var(--r2); font-size:13px; line-height:1.4; }
-.alert-chip .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-.alert-chip.ok { background:rgba(63,160,110,0.1); border:1px solid rgba(63,160,110,0.2); color:#7ed4a8; }
-.alert-chip.ok .dot { background:var(--ok); }
-.alert-chip.warn { background:rgba(212,137,42,0.1); border:1px solid rgba(212,137,42,0.25); color:#e4a85a; }
-.alert-chip.warn .dot { background:var(--warn); }
-.alert-chip.danger { background:rgba(224,85,85,0.1); border:1px solid rgba(224,85,85,0.25); color:#eb8080; }
-.alert-chip.danger .dot { background:var(--danger); }
+/* HERO */
+.hero-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:12px;position:relative;overflow:hidden;}
+.hero-card::after{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,0.09) 0%,transparent 70%);pointer-events:none;}
+.hero-avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;border:2px solid var(--border);margin-bottom:10px;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:36px;}
+.hero-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;}
+.hero-name{font-family:'DM Serif Display',serif;font-size:28px;color:var(--cream);line-height:1.1;}
+.hero-species{font-size:12px;color:var(--muted);margin-top:4px;letter-spacing:0.5px;}
+.hero-divider{height:1px;background:var(--border2);margin:16px 0;}
+.hero-stats{display:flex;}
+.hero-stat{flex:1;text-align:center;}
+.hero-stat+.hero-stat{border-left:1px solid var(--border2);}
+.hero-stat-val{font-family:'DM Serif Display',serif;font-size:22px;color:var(--gold2);}
+.hero-stat-val.danger{color:var(--danger);}
+.hero-stat-val.warn{color:var(--warn);}
+.hero-stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-top:2px;}
 
-.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
-.stat-card { background:var(--card); border:1px solid var(--border2); border-radius:var(--r2); padding:16px 14px; }
-.stat-card-lbl { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:8px; }
-.stat-card-val { font-family:'DM Serif Display',serif; font-size:28px; color:var(--gold2); line-height:1; }
-.stat-card-val.danger { color:var(--danger); }
-.stat-card-val.warn { color:var(--warn); }
-.stat-card-unit { font-size:11px; color:var(--muted); margin-top:4px; }
+/* ALERTS */
+.alerts{display:flex;flex-direction:column;gap:8px;margin-bottom:12px;}
+.alert-chip{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:var(--r2);font-size:13px;line-height:1.4;}
+.alert-chip .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.alert-chip.ok{background:rgba(63,160,110,0.1);border:1px solid rgba(63,160,110,0.2);color:#7ed4a8;}
+.alert-chip.ok .dot{background:var(--ok);}
+.alert-chip.warn{background:rgba(212,137,42,0.1);border:1px solid rgba(212,137,42,0.25);color:#e4a85a;}
+.alert-chip.warn .dot{background:var(--warn);}
+.alert-chip.danger{background:rgba(224,85,85,0.1);border:1px solid rgba(224,85,85,0.25);color:#eb8080;}
+.alert-chip.danger .dot{background:var(--danger);}
 
-.mini-chart { display:flex; flex-direction:column; gap:10px; }
-.mini-bar-row { display:flex; align-items:center; gap:10px; }
-.mini-bar-date { font-size:11px; color:var(--muted); min-width:52px; }
-.mini-bar-track { flex:1; height:6px; background:var(--card3); border-radius:3px; overflow:hidden; }
-.mini-bar-fill { height:100%; border-radius:3px; background:var(--gold); transition:width 0.6s ease; }
-.mini-bar-fill.refused { background:var(--danger); }
-.mini-bar-icon { font-size:14px; }
+/* STAT GRID */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.stat-card{background:var(--card);border:1px solid var(--border2);border-radius:var(--r2);padding:16px 14px;}
+.stat-card-lbl{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;}
+.stat-card-val{font-family:'DM Serif Display',serif;font-size:26px;color:var(--gold2);line-height:1;}
+.stat-card-val.danger{color:var(--danger);}
+.stat-card-val.warn{color:var(--warn);}
+.stat-card-unit{font-size:11px;color:var(--muted);margin-top:4px;}
 
-.temp-row { display:flex; align-items:center; justify-content:center; gap:24px; padding:16px 0 4px; }
-.temp-zone { text-align:center; }
-.temp-val { font-family:'DM Serif Display',serif; font-size:40px; line-height:1; }
-.temp-val.hot { color:#d48a2a; }
-.temp-val.cool { color:#5b9bd4; }
-.temp-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:4px; }
-.temp-sep { font-family:'DM Serif Display',serif; font-size:28px; color:var(--muted2); }
+/* MINI CHART */
+.mini-chart{display:flex;flex-direction:column;gap:10px;}
+.mini-bar-row{display:flex;align-items:center;gap:10px;}
+.mini-bar-date{font-size:11px;color:var(--muted);min-width:52px;}
+.mini-bar-track{flex:1;height:6px;background:var(--card3);border-radius:3px;overflow:hidden;}
+.mini-bar-fill{height:100%;border-radius:3px;background:var(--gold);transition:width 0.6s ease;}
+.mini-bar-fill.refused{background:var(--danger);}
+.mini-bar-icon{font-size:14px;}
 
-.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--r2); }
-table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:320px; }
-th { text-align:left; padding:10px 12px; color:var(--muted); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; font-weight:500; border-bottom:1px solid var(--border2); background:var(--card2); }
-td { padding:11px 12px; border-bottom:1px solid var(--border2); color:var(--text); vertical-align:middle; }
-tr:last-child td { border-bottom:none; }
+/* TEMP */
+.temp-zones{display:flex;gap:10px;margin-top:4px;}
+.temp-zone-card{flex:1;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r2);padding:14px;text-align:center;position:relative;}
+.temp-zone-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;}
+.temp-range{font-family:'DM Serif Display',serif;font-size:26px;line-height:1;}
+.temp-range.hot{color:#d48a2a;}
+.temp-range.cool{color:#5b9bd4;}
+.temp-edit-btn{position:absolute;top:8px;right:8px;font-size:12px;cursor:pointer;color:var(--muted);background:none;border:none;padding:2px;}
 
-.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:500; }
-.badge-ok { background:rgba(63,160,110,0.15); color:#7ed4a8; }
-.badge-warn { background:rgba(212,137,42,0.15); color:#e4a85a; }
-.badge-danger { background:rgba(224,85,85,0.15); color:#eb8080; }
-.badge-muted { background:rgba(107,107,122,0.2); color:var(--muted); }
-.badge-gold { background:rgba(201,168,76,0.15); color:var(--gold2); }
+/* TABLE */
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:300px;}
+th{text-align:left;padding:10px 10px;color:var(--muted);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500;border-bottom:1px solid var(--border2);background:var(--card2);}
+td{padding:11px 10px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
 
-.form-group { margin-bottom:14px; }
-.form-label { display:block; font-size:11px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
-.form-input,.form-select { width:100%; background:var(--card2); border:1px solid var(--border2); border-radius:var(--r3); padding:13px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; outline:none; transition:border-color 0.2s; appearance:none; -webkit-appearance:none; }
-.form-input:focus,.form-select:focus { border-color:var(--gold); }
-.form-input::placeholder { color:var(--muted2); }
-.btn { width:100%; padding:14px; border-radius:var(--r3); border:none; font-family:'DM Sans',sans-serif; font-weight:600; font-size:14px; letter-spacing:0.3px; cursor:pointer; transition:all 0.18s; }
-.btn-primary { background:var(--gold); color:#0c0c0e; }
-.btn-primary:active { transform:scale(0.97); background:var(--gold2); }
-.btn-outline { background:var(--card2); border:1px solid var(--border2); color:var(--muted); }
-.btn-outline:active { background:var(--card3); }
-.btn-sm { padding:8px 16px; font-size:12px; width:auto; border-radius:30px; }
+/* BADGE */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500;}
+.badge-ok{background:rgba(63,160,110,0.15);color:#7ed4a8;}
+.badge-no{background:rgba(224,85,85,0.15);color:#eb8080;}
+.badge-warn{background:rgba(212,137,42,0.15);color:#e4a85a;}
+.badge-danger{background:rgba(224,85,85,0.15);color:#eb8080;}
+.badge-muted{background:rgba(107,107,122,0.2);color:var(--muted);}
+.badge-gold{background:rgba(201,168,76,0.15);color:var(--gold2);}
 
-.toggle-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border2); }
-.toggle-row:last-child { border-bottom:none; }
-.toggle-info { display:flex; flex-direction:column; gap:2px; }
-.toggle-name { font-size:14px; font-weight:500; color:var(--text); }
-.toggle-desc { font-size:12px; color:var(--muted); }
-.toggle { width:46px; height:26px; background:var(--card3); border-radius:13px; position:relative; cursor:pointer; transition:background 0.3s; border:1px solid var(--border2); flex-shrink:0; }
-.toggle.on { background:var(--gold); border-color:var(--gold); }
-.toggle::after { content:''; position:absolute; top:2px; left:2px; width:20px; height:20px; background:rgba(255,255,255,0.9); border-radius:50%; transition:left 0.25s cubic-bezier(.4,0,.2,1); }
-.toggle.on::after { left:22px; }
+/* ROW ACTIONS */
+.row-actions{display:flex;gap:6px;}
+.act-btn{background:none;border:none;cursor:pointer;font-size:14px;padding:2px;color:var(--muted);transition:color 0.15s;}
+.act-btn:hover{color:var(--text);}
+.act-btn.del:hover{color:var(--danger);}
 
-.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:300; display:none; align-items:flex-end; justify-content:center; }
-.modal-overlay.open { display:flex; }
-.modal { background:var(--card); border:1px solid var(--border2); border-radius:var(--r) var(--r) 0 0; padding:28px 20px 40px; width:100%; max-width:430px; position:relative; animation:slideUp 0.3s cubic-bezier(.4,0,.2,1); }
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-.modal-title { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:18px; }
-.modal-handle { width:36px; height:4px; background:var(--card3); border-radius:2px; margin:0 auto 20px; }
-.modal-close { position:absolute; top:20px; right:20px; background:var(--card2); border:1px solid var(--border2); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px; color:var(--muted); }
+/* FORM */
+.form-group{margin-bottom:14px;}
+.form-label{display:block;font-size:11px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;}
+.form-input,.form-select{width:100%;background:var(--card2);border:1px solid var(--border2);border-radius:var(--r3);padding:13px 14px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;outline:none;transition:border-color 0.2s;appearance:none;-webkit-appearance:none;}
+.form-input:focus,.form-select:focus{border-color:var(--gold);}
+.form-input::placeholder{color:var(--muted2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn{width:100%;padding:14px;border-radius:var(--r3);border:none;font-family:'DM Sans',sans-serif;font-weight:600;font-size:14px;cursor:pointer;transition:all 0.18s;}
+.btn-primary{background:var(--gold);color:#0c0c0e;}
+.btn-primary:active{transform:scale(0.97);background:var(--gold2);}
+.btn-outline{background:var(--card2);border:1px solid var(--border2);color:var(--muted);}
+.btn-outline:active{background:var(--card3);}
+.btn-danger{background:rgba(224,85,85,0.15);border:1px solid rgba(224,85,85,0.3);color:#eb8080;}
+.btn-sm{padding:8px 16px;font-size:12px;width:auto;border-radius:30px;}
 
-.toast { position:fixed; bottom:88px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--card2); border:1px solid var(--border); color:var(--gold3); padding:10px 20px; border-radius:30px; font-size:13px; font-weight:500; z-index:400; opacity:0; pointer-events:none; transition:opacity 0.25s,transform 0.25s; white-space:nowrap; }
-.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+/* IMAGE UPLOAD */
+.avatar-upload{display:flex;align-items:center;gap:16px;margin-bottom:20px;}
+.avatar-preview{width:72px;height:72px;border-radius:50%;background:var(--card2);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;font-size:32px;overflow:hidden;cursor:pointer;flex-shrink:0;}
+.avatar-preview img{width:100%;height:100%;object-fit:cover;}
+.avatar-upload-info{flex:1;}
+.avatar-upload-info p{font-size:13px;color:var(--muted);line-height:1.5;}
+input[type=file]{display:none;}
 
-.delta-pos { color:var(--ok); }
-.delta-neg { color:var(--danger); }
-.empty-msg { text-align:center; padding:36px 0; color:var(--muted); font-size:13px; }
-::-webkit-scrollbar { width:3px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
-input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:none; }
-input[type="number"].form-input { -moz-appearance:textfield; }
+/* WEIGHT CHART */
+.weight-chart-wrap{padding:8px 0;}
+canvas{width:100%!important;}
+
+/* TOGGLE */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border2);}
+.toggle-row:last-child{border-bottom:none;}
+.toggle-info{display:flex;flex-direction:column;gap:2px;}
+.toggle-name{font-size:14px;font-weight:500;color:var(--text);}
+.toggle-desc{font-size:12px;color:var(--muted);}
+.toggle{width:46px;height:26px;background:var(--card3);border-radius:13px;position:relative;cursor:pointer;transition:background 0.3s;border:1px solid var(--border2);flex-shrink:0;}
+.toggle.on{background:var(--gold);border-color:var(--gold);}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:rgba(255,255,255,0.9);border-radius:50%;transition:left 0.25s cubic-bezier(.4,0,.2,1);}
+.toggle.on::after{left:22px;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:300;display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border:1px solid var(--border2);border-radius:var(--r) var(--r) 0 0;padding:28px 20px 40px;width:100%;max-width:430px;position:relative;animation:slideUp 0.3s cubic-bezier(.4,0,.2,1);max-height:90dvh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:36px;height:4px;background:var(--card3);border-radius:2px;margin:0 auto 20px;}
+.modal-title{font-family:'DM Serif Display',serif;font-size:22px;color:var(--cream);margin-bottom:18px;}
+.modal-close{position:absolute;top:20px;right:20px;background:var(--card2);border:1px solid var(--border2);border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--muted);}
+
+/* TOAST */
+.toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--card2);border:1px solid var(--border);color:var(--gold3);padding:10px 20px;border-radius:30px;font-size:13px;font-weight:500;z-index:500;opacity:0;pointer-events:none;transition:opacity 0.25s,transform 0.25s;white-space:nowrap;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* CONFIRM DIALOG */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px;}
+.confirm-overlay.open{display:flex;}
+.confirm-box{background:var(--card);border:1px solid var(--border2);border-radius:var(--r);padding:24px;width:100%;max-width:320px;}
+.confirm-title{font-family:'DM Serif Display',serif;font-size:20px;color:var(--cream);margin-bottom:8px;}
+.confirm-msg{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.confirm-actions{display:flex;gap:10px;}
+.confirm-actions .btn{flex:1;padding:12px;}
+
+/* MISC */
+.delta-pos{color:var(--ok);}
+.delta-neg{color:var(--danger);}
+.empty-msg{text-align:center;padding:36px 0;color:var(--muted);font-size:13px;}
+.settings-section-title{font-family:'DM Serif Display',serif;font-size:16px;color:var(--cream);margin-bottom:12px;margin-top:4px;}
+.danger-zone{border-color:rgba(224,85,85,0.2)!important;}
+::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+input[type="number"].form-input::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type="number"].form-input{-moz-appearance:textfield;}
 </style>
 </head>
 <body>
 <div class="app">
 
   <div class="header">
-    <div>
-      <div class="header-wordmark">Snake<span>.</span></div>
-      <div class="header-sub">Registro terrario</div>
+    <div class="header-top">
+      <div>
+        <div class="wordmark">Reptil<span>Eden</span></div>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" id="notifBtn" onclick="openNotifModal()" title="Notifiche">🔔</button>
+        <button class="icon-btn" onclick="openAddReptile()" title="Aggiungi rettile">＋</button>
+      </div>
     </div>
-    <button class="notif-btn" id="notifBtn" onclick="openNotifModal()">🔔</button>
+    <div class="reptile-selector" id="reptile-selector"></div>
   </div>
 
   <div class="content">
@@ -196,9 +232,9 @@ input[type="number"].form-input { -moz-appearance:textfield; }
     <!-- HOME -->
     <div id="page-home" class="page active">
       <div class="hero-card">
-        <span class="hero-snake-emoji">🐍</span>
-        <div class="hero-name" id="hero-name">Il tuo serpente</div>
-        <div class="hero-species" id="hero-species">Configura nome e specie nelle impostazioni</div>
+        <div class="hero-avatar" id="hero-avatar">🐍</div>
+        <div class="hero-name" id="hero-name">Il tuo rettile</div>
+        <div class="hero-species" id="hero-species">Aggiungi un rettile per iniziare</div>
         <div class="hero-divider"></div>
         <div class="hero-stats">
           <div class="hero-stat">
@@ -210,20 +246,29 @@ input[type="number"].form-input { -moz-appearance:textfield; }
             <div class="hero-stat-lbl">giorni al pasto</div>
           </div>
           <div class="hero-stat">
-            <div class="hero-stat-val" id="hs-pasti">—</div>
-            <div class="hero-stat-lbl">pasti totali</div>
+            <div class="hero-stat-val" id="hs-age">—</div>
+            <div class="hero-stat-lbl">età</div>
           </div>
         </div>
       </div>
+
       <div class="alerts" id="alerts-container"></div>
+
       <div class="card">
-        <div class="card-label">Temperatura terrario</div>
-        <div class="temp-row">
-          <div class="temp-zone"><div class="temp-val hot">29°</div><div class="temp-lbl">Caldo</div></div>
-          <div class="temp-sep">/</div>
-          <div class="temp-zone"><div class="temp-val cool">27°</div><div class="temp-lbl">Fresco</div></div>
+        <div class="card-label" style="margin-bottom:10px;">Temperatura terrario</div>
+        <div class="temp-zones">
+          <div class="temp-zone-card">
+            <div class="temp-zone-lbl">🔥 Zona calda</div>
+            <div class="temp-range hot" id="temp-hot-display">—°/—°</div>
+            <button class="temp-edit-btn" onclick="openTempModal()">✏️</button>
+          </div>
+          <div class="temp-zone-card">
+            <div class="temp-zone-lbl">❄️ Zona fredda</div>
+            <div class="temp-range cool" id="temp-cool-display">—°/—°</div>
+          </div>
         </div>
       </div>
+
       <div class="card">
         <div class="card-label">Ultimi pasti</div>
         <div class="mini-chart" id="home-chart"></div>
@@ -235,44 +280,76 @@ input[type="number"].form-input { -moz-appearance:textfield; }
       <div class="section-head">Pasti <button class="btn btn-outline btn-sm" onclick="openAddFeed()">+ Aggiungi</button></div>
       <div id="feed-add-form" style="display:none">
         <div class="card">
-          <div class="card-label">Nuovo pasto</div>
+          <div class="card-label" id="feed-form-title">Nuovo pasto</div>
+          <input type="hidden" id="feed-edit-idx" value="-1">
           <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="feed-date"></div>
           <div class="form-group"><label class="form-label">Peso preda (g)</label><input type="number" class="form-input" id="feed-weight" placeholder="es. 15"></div>
-          <div class="form-group"><label class="form-label">Esito</label><select class="form-select" id="feed-esito"><option value="Mangiato">✅ Mangiato</option><option value="Rifiutato">❌ Rifiutato</option><option value="Parziale">⚠️ Parziale</option></select></div>
-          <div class="form-group"><label class="form-label">Defecazione</label><select class="form-select" id="feed-defecazione"><option value="false">No</option><option value="true">Sì</option></select></div>
+          <div class="form-group"><label class="form-label">Esito</label>
+            <select class="form-select" id="feed-esito">
+              <option value="Mangiato">✅ Mangiato</option>
+              <option value="Rifiutato">❌ Rifiutato</option>
+              <option value="Parziale">⚠️ Parziale</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Defecazione</label>
+            <select class="form-select" id="feed-defecazione">
+              <option value="false">No</option>
+              <option value="true">Sì</option>
+            </select>
+          </div>
           <div class="form-group"><label class="form-label">Note</label><input type="text" class="form-input" id="feed-note" placeholder="es. Stava facendo la muta"></div>
-          <button class="btn btn-primary" onclick="saveFeed()">Salva pasto</button>
+          <button class="btn btn-primary" onclick="saveFeed()">Salva</button>
           <div style="height:8px"></div>
           <button class="btn btn-outline" onclick="closeFeedForm()">Annulla</button>
         </div>
       </div>
       <div class="card">
         <div class="table-wrap">
-          <table><thead><tr><th>Data</th><th>Peso</th><th>%</th><th>Esito</th><th>Note</th></tr></thead><tbody id="feed-tbody"></tbody></table>
+          <table><thead><tr><th>Data</th><th>g</th><th>Esito</th><th>Def.</th><th></th></tr></thead><tbody id="feed-tbody"></tbody></table>
         </div>
       </div>
     </div>
 
-    <!-- MANUTENZIONE -->
+    <!-- IGIENE -->
     <div id="page-maint" class="page">
-      <div class="section-head">Igiene <button class="btn btn-outline btn-sm" onclick="openAddMaint()">+ Aggiungi</button></div>
-      <div id="maint-add-form" style="display:none">
-        <div class="card">
-          <div class="card-label">Nuova manutenzione</div>
-          <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="maint-date"></div>
-          <div class="form-group"><label class="form-label">Rimozione escrementi</label><select class="form-select" id="maint-esc"><option value="true">✅ Sì</option><option value="false">No</option></select></div>
-          <div class="form-group"><label class="form-label">Pulizia profonda</label><select class="form-select" id="maint-deep"><option value="false">No</option><option value="true">✅ Sì</option></select></div>
-          <button class="btn btn-primary" onclick="saveMaint()">Salva</button>
-          <div style="height:8px"></div>
-          <button class="btn btn-outline" onclick="closeMaintForm()">Annulla</button>
+      <div class="section-head">Igiene</div>
+
+      <!-- ESCREMENTI -->
+      <div class="card">
+        <div class="card-label" style="margin-bottom:10px;">🧹 Rimozione escrementi</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:13px;color:var(--muted)" id="last-esc-info">—</div>
+          <button class="btn btn-outline btn-sm" onclick="openAddEsc()">+ Aggiungi</button>
+        </div>
+        <div id="esc-add-form" style="display:none;margin-bottom:12px;">
+          <input type="hidden" id="esc-edit-idx" value="-1">
+          <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="esc-date"></div>
+          <div class="form-group"><label class="form-label">Note</label><input type="text" class="form-input" id="esc-note" placeholder="opzionale"></div>
+          <button class="btn btn-primary" onclick="saveEsc()" style="margin-bottom:8px">Salva</button>
+          <button class="btn btn-outline" onclick="closeEscForm()">Annulla</button>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Data</th><th>Note</th><th></th></tr></thead><tbody id="esc-tbody"></tbody></table>
         </div>
       </div>
-      <div class="stat-grid">
-        <div class="stat-card"><div class="stat-card-lbl">Ultima rimozione</div><div style="font-size:14px;color:var(--text);font-weight:500;margin-top:6px" id="last-esc-date">—</div><div class="stat-card-unit" id="last-esc-days"></div></div>
-        <div class="stat-card"><div class="stat-card-lbl">Ultima pulizia</div><div style="font-size:14px;color:var(--text);font-weight:500;margin-top:6px" id="last-deep-date">—</div><div class="stat-card-unit" id="last-deep-days"></div></div>
-      </div>
+
+      <!-- PULIZIA PROFONDA -->
       <div class="card">
-        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Escrementi</th><th>Pulizia profonda</th></tr></thead><tbody id="maint-tbody"></tbody></table></div>
+        <div class="card-label" style="margin-bottom:10px;">🏠 Pulizia profonda</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="font-size:13px;color:var(--muted)" id="last-deep-info">—</div>
+          <button class="btn btn-outline btn-sm" onclick="openAddDeep()">+ Aggiungi</button>
+        </div>
+        <div id="deep-add-form" style="display:none;margin-bottom:12px;">
+          <input type="hidden" id="deep-edit-idx" value="-1">
+          <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="deep-date"></div>
+          <div class="form-group"><label class="form-label">Note</label><input type="text" class="form-input" id="deep-note" placeholder="opzionale"></div>
+          <button class="btn btn-primary" onclick="saveDeep()" style="margin-bottom:8px">Salva</button>
+          <button class="btn btn-outline" onclick="closeDeepForm()">Annulla</button>
+        </div>
+        <div class="table-wrap">
+          <table><thead><tr><th>Data</th><th>Note</th><th></th></tr></thead><tbody id="deep-tbody"></tbody></table>
+        </div>
       </div>
     </div>
 
@@ -281,55 +358,88 @@ input[type="number"].form-input { -moz-appearance:textfield; }
       <div class="section-head">Salute <button class="btn btn-outline btn-sm" onclick="openAddHealth()">+ Aggiungi</button></div>
       <div id="health-add-form" style="display:none">
         <div class="card">
-          <div class="card-label">Nuovo rilevamento</div>
-          <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="health-type" onchange="toggleHealthForm()"><option value="peso">⚖️ Peso</option><option value="muta">🐍 Muta</option></select></div>
+          <div class="card-label" id="health-form-title">Nuovo rilevamento</div>
+          <input type="hidden" id="health-edit-idx" value="-1">
+          <input type="hidden" id="health-edit-type" value="">
+          <div class="form-group"><label class="form-label">Tipo</label>
+            <select class="form-select" id="health-type" onchange="toggleHealthForm()">
+              <option value="peso">⚖️ Peso</option>
+              <option value="muta">🐍 Muta</option>
+            </select>
+          </div>
           <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="health-date"></div>
           <div id="health-peso-group" class="form-group"><label class="form-label">Peso (g)</label><input type="number" class="form-input" id="health-peso" placeholder="es. 12"></div>
-          <div id="health-muta-group" class="form-group" style="display:none"><label class="form-label">Muta completa</label><select class="form-select" id="health-muta"><option value="Sì">Sì</option><option value="No">No</option></select></div>
+          <div id="health-muta-group" class="form-group" style="display:none"><label class="form-label">Muta completa</label>
+            <select class="form-select" id="health-muta"><option value="Sì">Sì</option><option value="No">No</option></select>
+          </div>
           <button class="btn btn-primary" onclick="saveHealth()">Salva</button>
           <div style="height:8px"></div>
           <button class="btn btn-outline" onclick="closeHealthForm()">Annulla</button>
         </div>
       </div>
+
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-card-lbl">Peso attuale</div><div class="stat-card-val" id="current-weight">—</div><div class="stat-card-unit">grammi</div></div>
         <div class="stat-card"><div class="stat-card-lbl">Ultima muta</div><div style="font-size:15px;color:var(--gold2);font-weight:500;margin-top:8px" id="last-muta">—</div><div class="stat-card-unit" id="last-muta-days"></div></div>
       </div>
+
+      <div class="card">
+        <div class="card-label">Andamento peso</div>
+        <div class="weight-chart-wrap"><canvas id="weightChart" height="160"></canvas></div>
+      </div>
+
       <div class="card">
         <div class="card-label">Storico pesi</div>
-        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Peso</th><th>Variazione</th></tr></thead><tbody id="peso-tbody"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Peso</th><th>Δ</th><th></th></tr></thead><tbody id="peso-tbody"></tbody></table></div>
       </div>
       <div class="card">
         <div class="card-label">Storico mute</div>
-        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Completa</th></tr></thead><tbody id="muta-tbody"></tbody></table></div>
+        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Completa</th><th></th></tr></thead><tbody id="muta-tbody"></tbody></table></div>
       </div>
     </div>
 
-    <!-- SETTINGS -->
+    <!-- IMPOSTAZIONI -->
     <div id="page-settings" class="page">
       <div class="section-head">Impostazioni</div>
+
       <div class="card">
-        <div class="card-label">Il tuo serpente</div>
+        <div class="settings-section-title">Rettile attivo</div>
+        <div class="avatar-upload">
+          <div class="avatar-preview" id="settings-avatar-preview" onclick="document.getElementById('avatar-file').click()">🐍</div>
+          <div class="avatar-upload-info">
+            <p>Tocca per cambiare immagine.<br>Usa una foto del tuo animale.</p>
+            <input type="file" id="avatar-file" accept="image/*" onchange="handleAvatarUpload(event)">
+          </div>
+        </div>
         <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" id="snake-name" placeholder="es. Noodles"></div>
         <div class="form-group"><label class="form-label">Specie</label><input type="text" class="form-input" id="snake-species" placeholder="es. Ball Python"></div>
-        <div class="form-group"><label class="form-label">Peso base (g)</label><input type="number" class="form-input" id="snake-weight" placeholder="es. 12"></div>
+        <div class="form-group"><label class="form-label">Data di nascita</label><input type="date" class="form-input" id="snake-birthday"></div>
+        <div class="form-group"><label class="form-label">Icona (emoji)</label><input type="text" class="form-input" id="snake-emoji" placeholder="es. 🐍 🦎 🐊" maxlength="4"></div>
         <button class="btn btn-primary" onclick="saveSettings()">Salva info</button>
       </div>
+
       <div class="card">
-        <div class="card-label">Intervalli notifiche (giorni)</div>
-        <div class="form-group"><label class="form-label">Tra un pasto e l'altro</label><input type="number" class="form-input" id="interval-feed" value="7" min="1" max="30"></div>
-        <div class="form-group"><label class="form-label">Rimozione escrementi</label><input type="number" class="form-input" id="interval-esc" value="7" min="1" max="30"></div>
-        <div class="form-group"><label class="form-label">Pulizia profonda</label><input type="number" class="form-input" id="interval-deep" value="30" min="7" max="90"></div>
+        <div class="settings-section-title">Intervalli notifiche</div>
+        <div class="form-group"><label class="form-label">Giorni tra i pasti</label><input type="number" class="form-input" id="interval-feed" value="7" min="1" max="30"></div>
+        <div class="form-group"><label class="form-label">Giorni tra pulizie profonde</label><input type="number" class="form-input" id="interval-deep" value="30" min="7" max="90"></div>
         <button class="btn btn-primary" onclick="saveIntervals()">Salva intervalli</button>
       </div>
-      <div class="card">
-        <div class="card-label">Dati</div>
+
+      <div class="card danger-zone">
+        <div class="settings-section-title" style="color:var(--danger)">Zona pericolosa</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">Elimina questo rettile e tutti i suoi dati. Azione irreversibile.</p>
+        <button class="btn btn-danger" onclick="confirmDeleteReptile()">🗑 Elimina rettile</button>
+      </div>
+
+      <div class="card" style="margin-top:4px">
+        <div class="settings-section-title">Dati</div>
         <button class="btn btn-outline" onclick="exportData()">📁 Esporta backup JSON</button>
       </div>
     </div>
 
   </div>
 
+  <!-- NAV BAR -->
   <div class="nav-bar">
     <button class="nav-btn active" data-page="home" onclick="switchPage('home',this)"><span class="ico">🏠</span>Home</button>
     <button class="nav-btn" data-page="feed" onclick="switchPage('feed',this)"><span class="ico">🐭</span>Pasti</button>
@@ -337,126 +447,751 @@ input[type="number"].form-input { -moz-appearance:textfield; }
     <button class="nav-btn" data-page="health" onclick="switchPage('health',this)"><span class="ico">💚</span>Salute</button>
     <button class="nav-btn" data-page="settings" onclick="switchPage('settings',this)"><span class="ico">⚙️</span>Config</button>
   </div>
-
 </div>
 
-<!-- NOTIF MODAL -->
+<!-- MODAL: AGGIUNGI RETTILE -->
+<div class="modal-overlay" id="addReptileModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-close" onclick="closeAddReptile()">✕</div>
+    <div class="modal-title">Nuovo rettile</div>
+    <div class="avatar-upload" style="margin-bottom:16px;">
+      <div class="avatar-preview" id="new-avatar-preview" onclick="document.getElementById('new-avatar-file').click()">🐍</div>
+      <div class="avatar-upload-info"><p>Tocca per aggiungere una foto del tuo animale.</p><input type="file" id="new-avatar-file" accept="image/*" onchange="handleNewAvatarUpload(event)"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Nome *</label><input type="text" class="form-input" id="new-rep-name" placeholder="es. Noodles"></div>
+    <div class="form-group"><label class="form-label">Specie</label><input type="text" class="form-input" id="new-rep-species" placeholder="es. Ball Python"></div>
+    <div class="form-group"><label class="form-label">Data di nascita</label><input type="date" class="form-input" id="new-rep-birthday"></div>
+    <div class="form-group"><label class="form-label">Icona (emoji)</label><input type="text" class="form-input" id="new-rep-emoji" placeholder="🐍" maxlength="4" value="🐍"></div>
+    <button class="btn btn-primary" onclick="saveNewReptile()">Crea rettile</button>
+  </div>
+</div>
+
+<!-- MODAL: TEMPERATURA -->
+<div class="modal-overlay" id="tempModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-close" onclick="closeTempModal()">✕</div>
+    <div class="modal-title">Temperatura terrario</div>
+    <div class="form-group">
+      <label class="form-label">🔥 Zona calda — range (°C)</label>
+      <div class="form-row">
+        <div><label class="form-label" style="font-size:9px">MIN</label><input type="number" class="form-input" id="temp-hot-min" placeholder="es. 29"></div>
+        <div><label class="form-label" style="font-size:9px">MAX</label><input type="number" class="form-input" id="temp-hot-max" placeholder="es. 32"></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">❄️ Zona fredda — range (°C)</label>
+      <div class="form-row">
+        <div><label class="form-label" style="font-size:9px">MIN</label><input type="number" class="form-input" id="temp-cool-min" placeholder="es. 24"></div>
+        <div><label class="form-label" style="font-size:9px">MAX</label><input type="number" class="form-input" id="temp-cool-max" placeholder="es. 27"></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="saveTemp()">Salva temperatura</button>
+  </div>
+</div>
+
+<!-- MODAL: NOTIFICHE -->
 <div class="modal-overlay" id="notifModal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-close" onclick="closeNotifModal()">✕</div>
     <div class="modal-title">Notifiche</div>
     <div id="notif-status" style="margin-bottom:18px;font-size:13px;color:var(--muted)"></div>
-    <div class="toggle-row"><div class="toggle-info"><div class="toggle-name">Pasto imminente</div><div class="toggle-desc">Avviso quando è ora di dar da mangiare</div></div><div class="toggle on" id="toggle-feed" onclick="toggleNotif('feed')"></div></div>
-    <div class="toggle-row"><div class="toggle-info"><div class="toggle-name">Rimozione escrementi</div><div class="toggle-desc">Avviso per la pulizia regolare</div></div><div class="toggle on" id="toggle-esc" onclick="toggleNotif('esc')"></div></div>
-    <div class="toggle-row"><div class="toggle-info"><div class="toggle-name">Pulizia profonda</div><div class="toggle-desc">Avviso per il cambio substrato</div></div><div class="toggle on" id="toggle-deep" onclick="toggleNotif('deep')"></div></div>
+    <div class="toggle-row">
+      <div class="toggle-info"><div class="toggle-name">Pasto imminente</div><div class="toggle-desc">Avviso quando è ora di dar da mangiare</div></div>
+      <div class="toggle on" id="toggle-feed" onclick="toggleNotif('feed')"></div>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-info"><div class="toggle-name">Pulizia profonda</div><div class="toggle-desc">Avviso per il cambio substrato</div></div>
+      <div class="toggle on" id="toggle-deep" onclick="toggleNotif('deep')"></div>
+    </div>
     <div style="height:20px"></div>
     <button class="btn btn-primary" onclick="requestNotifPermission()">Abilita notifiche push</button>
   </div>
 </div>
 
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-title" id="confirm-title">Conferma</div>
+    <div class="confirm-msg" id="confirm-msg">Sei sicuro?</div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" onclick="closeConfirm()">Annulla</button>
+      <button class="btn btn-danger" id="confirm-ok-btn" onclick="confirmOk()">Elimina</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script>
-const DB_KEY='snakeTrackerData_v2';
-function getDefaultData(){return{snake:{name:'',species:'',weight:12},intervals:{feed:7,esc:7,deep:30},notifToggles:{feed:true,esc:true,deep:true},feeding:[{date:'2026-04-02',weight:2,esito:'Mangiato',defecazione:true,note:''},{date:'2026-04-07',weight:2,esito:'Rifiutato',defecazione:false,note:'Stava facendo la muta'},{date:'2026-04-13',weight:2,esito:'Mangiato',defecazione:false,note:''},{date:'2026-04-18',weight:2,esito:'Mangiato',defecazione:false,note:''}],maintenance:[{date:'2026-03-27',rimozione:true,profonda:false},{date:'2026-04-03',rimozione:false,profonda:true}],weights:[{date:'2026-04-04',peso:12}],mute:[{date:'2026-04-12',completa:'Sì'}]}}
-function loadData(){try{const r=localStorage.getItem(DB_KEY);if(r)return JSON.parse(r);}catch(e){}return getDefaultData();}
-function saveData(d){localStorage.setItem(DB_KEY,JSON.stringify(d));}
-let appData=loadData();
+// ═══════════════════════════════════════════════════════
+// DATA SCHEMA
+// ═══════════════════════════════════════════════════════
+const DB_KEY = 'reptilEdenV1';
 
-function switchPage(page,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');btn.classList.add('active');renderPage(page);}
-function renderPage(p){if(p==='home')renderHome();else if(p==='feed')renderFeed();else if(p==='maint')renderMaint();else if(p==='health')renderHealth();else if(p==='settings')renderSettings();}
-function daysSince(ds){if(!ds)return 9999;return Math.floor((new Date()-new Date(ds))/86400000);}
-function formatDate(ds){if(!ds)return'—';const[y,m,d]=ds.split('-');return`${d}/${m}/${y}`;}
-function todayISO(){return new Date().toISOString().slice(0,10);}
-function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
-
-function renderHome(){
-  const d=appData,sn=d.snake;
-  document.getElementById('hero-name').textContent=sn.name||'Il tuo serpente';
-  document.getElementById('hero-species').textContent=sn.species||'Configura nome e specie nelle impostazioni';
-  const lastW=d.weights.length?d.weights[d.weights.length-1].peso:(sn.weight||'—');
-  document.getElementById('hs-peso').textContent=lastW;
-  const lastFD=d.feeding.length?d.feeding[d.feeding.length-1].date:null;
-  const dsf=daysSince(lastFD),nextF=Math.max(0,d.intervals.feed-dsf);
-  const nfEl=document.getElementById('hs-nextfeed');
-  nfEl.textContent=lastFD?nextF:'—';
-  nfEl.className='hero-stat-val'+(nextF===0?' warn':dsf>d.intervals.feed?' danger':'');
-  document.getElementById('hs-pasti').textContent=d.feeding.length;
-  const alerts=[];
-  if(lastFD){const over=dsf-d.intervals.feed;if(over>=0)alerts.push({type:over>2?'danger':'warn',msg:over===0?'Oggi è il giorno del pasto!':`Pasto in ritardo di ${over} giorn${over===1?'o':'i'}`});else if(nextF<=2)alerts.push({type:'warn',msg:`Pasto tra ${nextF} giorn${nextF===1?'o':'i'}`});else alerts.push({type:'ok',msg:`Prossimo pasto tra ${nextF} giorni`});}
-  const lastEsc=d.maintenance.filter(m=>m.rimozione).slice(-1)[0]?.date;
-  if(daysSince(lastEsc)>=d.intervals.esc)alerts.push({type:'warn',msg:'Rimozione escrementi in scadenza'});
-  const lastDeep=d.maintenance.filter(m=>m.profonda).slice(-1)[0]?.date;
-  if(daysSince(lastDeep)>=d.intervals.deep)alerts.push({type:'danger',msg:'Pulizia profonda necessaria'});
-  document.getElementById('alerts-container').innerHTML=alerts.map(a=>`<div class="alert-chip ${a.type}"><div class="dot"></div>${a.msg}</div>`).join('');
-  const chart=document.getElementById('home-chart');
-  const recent=d.feeding.slice(-5);
-  if(!recent.length){chart.innerHTML='<div class="empty-msg">Nessun pasto registrato</div>';return;}
-  const snW=sn.weight||12;
-  chart.innerHTML=recent.map(f=>{const ok=f.esito==='Mangiato';const pct=Math.min(100,Math.round(f.weight/snW*100*4));return`<div class="mini-bar-row"><div class="mini-bar-date">${formatDate(f.date)}</div><div class="mini-bar-track"><div class="mini-bar-fill ${!ok?'refused':''}" style="width:${pct}%"></div></div><div class="mini-bar-icon">${ok?'✅':'❌'}</div></div>`;}).join('');
+function defaultReptile(name, species, emoji, birthday, avatar) {
+  return {
+    id: Date.now().toString(),
+    name: name || 'Senza nome',
+    species: species || '',
+    emoji: emoji || '🐍',
+    birthday: birthday || '',
+    avatar: avatar || '',
+    intervals: { feed: 7, deep: 30 },
+    notifToggles: { feed: true, deep: true },
+    temp: { hotMin: 29, hotMax: 32, coolMin: 24, coolMax: 27 },
+    feeding: [],
+    escrementi: [],
+    puliziaProfonda: [],
+    weights: [],
+    mute: []
+  };
 }
 
-function renderFeed(){
-  const rows=[...appData.feeding].reverse();
-  const snW=appData.snake.weight||12;
-  document.getElementById('feed-tbody').innerHTML=rows.length?rows.map(f=>{const pct=(f.weight/snW*100).toFixed(1);const b=f.esito==='Mangiato'?'badge-ok':f.esito==='Parziale'?'badge-warn':'badge-danger';return`<tr><td>${formatDate(f.date)}</td><td>${f.weight}g</td><td>${pct}%</td><td><span class="badge ${b}">${f.esito}</span></td><td style="color:var(--muted);font-size:11px">${f.note||''}</td></tr>`;}).join(''):'<tr><td colspan="5" class="empty-msg">Nessun pasto</td></tr>';
+function loadDB() {
+  try {
+    const r = localStorage.getItem(DB_KEY);
+    if (r) return JSON.parse(r);
+  } catch(e) {}
+  // seed with demo data
+  const rep = defaultReptile('Il mio serpente', 'Ball Python', '🐍', '', '');
+  rep.feeding = [
+    { date:'2026-04-02', weight:2, esito:'Mangiato', defecazione:true, note:'' },
+    { date:'2026-04-07', weight:2, esito:'Rifiutato', defecazione:false, note:'Stava facendo la muta' },
+    { date:'2026-04-13', weight:2, esito:'Mangiato', defecazione:false, note:'' },
+    { date:'2026-04-18', weight:2, esito:'Mangiato', defecazione:false, note:'' },
+  ];
+  rep.escrementi = [{ date:'2026-03-27', note:'' }, { date:'2026-04-03', note:'' }];
+  rep.puliziaProfonda = [{ date:'2026-04-03', note:'' }];
+  rep.weights = [{ date:'2026-04-04', peso:12 }];
+  rep.mute = [{ date:'2026-04-12', completa:'Sì' }];
+  return { reptiles: [rep], activeId: rep.id };
 }
-function openAddFeed(){document.getElementById('feed-add-form').style.display='block';document.getElementById('feed-date').value=todayISO();document.getElementById('feed-weight').value='';document.getElementById('feed-note').value='';}
-function closeFeedForm(){document.getElementById('feed-add-form').style.display='none';}
-function saveFeed(){const date=document.getElementById('feed-date').value,weight=parseFloat(document.getElementById('feed-weight').value);if(!date||isNaN(weight)){showToast('⚠️ Inserisci data e peso');return;}appData.feeding.push({date,weight,esito:document.getElementById('feed-esito').value,defecazione:document.getElementById('feed-defecazione').value==='true',note:document.getElementById('feed-note').value.trim()});appData.feeding.sort((a,b)=>a.date.localeCompare(b.date));saveData(appData);closeFeedForm();renderFeed();scheduleNotifications();showToast('✅ Pasto salvato!');}
 
-function renderMaint(){
-  const d=appData;
-  const lastEsc=d.maintenance.filter(m=>m.rimozione).slice(-1)[0]?.date;
-  const lastDeep=d.maintenance.filter(m=>m.profonda).slice(-1)[0]?.date;
-  document.getElementById('last-esc-date').textContent=lastEsc?formatDate(lastEsc):'—';
-  document.getElementById('last-esc-days').textContent=lastEsc?`${daysSince(lastEsc)} giorni fa`:'';
-  document.getElementById('last-deep-date').textContent=lastDeep?formatDate(lastDeep):'—';
-  document.getElementById('last-deep-days').textContent=lastDeep?`${daysSince(lastDeep)} giorni fa`:'';
-  const rows=[...d.maintenance].reverse();
-  document.getElementById('maint-tbody').innerHTML=rows.length?rows.map(m=>`<tr><td>${formatDate(m.date)}</td><td><span class="badge ${m.rimozione?'badge-ok':'badge-muted'}">${m.rimozione?'Sì':'No'}</span></td><td><span class="badge ${m.profonda?'badge-ok':'badge-muted'}">${m.profonda?'Sì':'No'}</span></td></tr>`).join(''):'<tr><td colspan="3" class="empty-msg">Nessuna manutenzione</td></tr>';
+function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+let db = loadDB();
+let newAvatarData = '';
+let confirmCallback = null;
+let weightChartInstance = null;
+
+function activeRep() { return db.reptiles.find(r => r.id === db.activeId) || db.reptiles[0]; }
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function switchPage(page, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  btn.classList.add('active');
+  renderPage(page);
 }
-function openAddMaint(){document.getElementById('maint-add-form').style.display='block';document.getElementById('maint-date').value=todayISO();}
-function closeMaintForm(){document.getElementById('maint-add-form').style.display='none';}
-function saveMaint(){const date=document.getElementById('maint-date').value;if(!date){showToast('⚠️ Inserisci la data');return;}appData.maintenance.push({date,rimozione:document.getElementById('maint-esc').value==='true',profonda:document.getElementById('maint-deep').value==='true'});appData.maintenance.sort((a,b)=>a.date.localeCompare(b.date));saveData(appData);closeMaintForm();renderMaint();scheduleNotifications();showToast('✅ Salvato!');}
-
-function toggleHealthForm(){const t=document.getElementById('health-type').value;document.getElementById('health-peso-group').style.display=t==='peso'?'':'none';document.getElementById('health-muta-group').style.display=t==='muta'?'':'none';}
-function renderHealth(){
-  const d=appData;
-  const lastW=d.weights.length?d.weights[d.weights.length-1]:null;
-  const lastM=d.mute.length?d.mute[d.mute.length-1]:null;
-  document.getElementById('current-weight').textContent=lastW?lastW.peso:'—';
-  document.getElementById('last-muta').textContent=lastM?formatDate(lastM.date):'—';
-  document.getElementById('last-muta-days').textContent=lastM?`${daysSince(lastM.date)} giorni fa`:'';
-  const pesos=[...d.weights].reverse();
-  document.getElementById('peso-tbody').innerHTML=pesos.length?pesos.map((w,i)=>{const prev=pesos[i+1];const delta=prev?w.peso-prev.peso:null;const dStr=delta!==null?`<span class="${delta>=0?'delta-pos':'delta-neg'}">${delta>=0?'+':''}${delta}g</span>`:'—';return`<tr><td>${formatDate(w.date)}</td><td>${w.peso}g</td><td>${dStr}</td></tr>`;}).join(''):'<tr><td colspan="3" class="empty-msg">Nessun dato</td></tr>';
-  document.getElementById('muta-tbody').innerHTML=d.mute.length?[...d.mute].reverse().map(m=>`<tr><td>${formatDate(m.date)}</td><td><span class="badge badge-gold">${m.completa}</span></td></tr>`).join(''):'<tr><td colspan="2" class="empty-msg">Nessuna muta</td></tr>';
+function renderPage(p) {
+  if (p==='home') renderHome();
+  else if (p==='feed') renderFeed();
+  else if (p==='maint') renderMaint();
+  else if (p==='health') renderHealth();
+  else if (p==='settings') renderSettings();
 }
-function openAddHealth(){document.getElementById('health-add-form').style.display='block';document.getElementById('health-date').value=todayISO();document.getElementById('health-peso').value='';}
-function closeHealthForm(){document.getElementById('health-add-form').style.display='none';}
-function saveHealth(){const type=document.getElementById('health-type').value,date=document.getElementById('health-date').value;if(!date){showToast('⚠️ Inserisci la data');return;}if(type==='peso'){const peso=parseFloat(document.getElementById('health-peso').value);if(isNaN(peso)){showToast('⚠️ Inserisci il peso');return;}appData.weights.push({date,peso});appData.weights.sort((a,b)=>a.date.localeCompare(b.date));appData.snake.weight=peso;}else{appData.mute.push({date,completa:document.getElementById('health-muta').value});appData.mute.sort((a,b)=>a.date.localeCompare(b.date));}saveData(appData);closeHealthForm();renderHealth();showToast('✅ Salvato!');}
+function renderCurrentPage() {
+  const active = document.querySelector('.nav-btn.active');
+  if (active) renderPage(active.dataset.page);
+}
 
-function renderSettings(){document.getElementById('snake-name').value=appData.snake.name||'';document.getElementById('snake-species').value=appData.snake.species||'';document.getElementById('snake-weight').value=appData.snake.weight||'';document.getElementById('interval-feed').value=appData.intervals.feed;document.getElementById('interval-esc').value=appData.intervals.esc;document.getElementById('interval-deep').value=appData.intervals.deep;}
-function saveSettings(){appData.snake.name=document.getElementById('snake-name').value.trim();appData.snake.species=document.getElementById('snake-species').value.trim();appData.snake.weight=parseFloat(document.getElementById('snake-weight').value)||appData.snake.weight;saveData(appData);showToast('✅ Info salvate!');}
-function saveIntervals(){appData.intervals.feed=parseInt(document.getElementById('interval-feed').value)||7;appData.intervals.esc=parseInt(document.getElementById('interval-esc').value)||7;appData.intervals.deep=parseInt(document.getElementById('interval-deep').value)||30;saveData(appData);scheduleNotifications();showToast('✅ Intervalli salvati!');}
-function exportData(){const b=new Blob([JSON.stringify(appData,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='snake-tracker-backup.json';a.click();URL.revokeObjectURL(u);showToast('📁 Esportazione completata!');}
+// ═══════════════════════════════════════════════════════
+// REPTILE SELECTOR
+// ═══════════════════════════════════════════════════════
+function renderReptileSelector() {
+  const sel = document.getElementById('reptile-selector');
+  sel.innerHTML = db.reptiles.map(r =>
+    `<div class="rep-chip ${r.id===db.activeId?'active':''}" onclick="selectReptile('${r.id}')">
+      <span class="rep-icon">${r.avatar ? `<img src="${r.avatar}" style="width:18px;height:18px;border-radius:50%;object-fit:cover">` : r.emoji}</span>
+      ${r.name}
+    </div>`
+  ).join('');
+}
 
-function openNotifModal(){document.getElementById('notifModal').classList.add('open');updateNotifStatus();updateNotifToggles();}
-function closeNotifModal(){document.getElementById('notifModal').classList.remove('open');}
-function updateNotifStatus(){const el=document.getElementById('notif-status');if(!('Notification'in window)){el.textContent='❌ Browser non supportato';return;}const p=Notification.permission;if(p==='granted'){el.innerHTML='<span style="color:var(--ok)">✅ Notifiche attive</span>';document.getElementById('notifBtn').classList.add('active');}else if(p==='denied')el.innerHTML='<span style="color:var(--danger)">❌ Bloccate — abilita nelle impostazioni del browser</span>';else el.innerHTML='<span style="color:var(--warn)">⚠️ Non ancora abilitate</span>';}
-async function requestNotifPermission(){if(!('Notification'in window)){showToast('❌ Non supportato');return;}const p=await Notification.requestPermission();updateNotifStatus();if(p==='granted'){showToast('🔔 Notifiche abilitate!');closeNotifModal();scheduleNotifications();}else showToast('❌ Permesso negato');}
-function toggleNotif(k){appData.notifToggles[k]=!appData.notifToggles[k];saveData(appData);updateNotifToggles();}
-function updateNotifToggles(){['feed','esc','deep'].forEach(k=>{const el=document.getElementById('toggle-'+k);appData.notifToggles[k]?el.classList.add('on'):el.classList.remove('on');});}
-function scheduleNotifications(){if(Notification.permission==='granted')checkAndNotify();}
-let lastNotifTime={};
-function checkAndNotify(){const d=appData;if(d.notifToggles.feed){const lf=d.feeding.length?d.feeding[d.feeding.length-1].date:null;const ds=daysSince(lf);if(ds>=d.intervals.feed){const ov=ds-d.intervals.feed;sendNotif(ov===0?'🐭 Giorno del pasto!':'🐭 Pasto in ritardo!',ov===0?'È ora di dare da mangiare al tuo serpente.':`In ritardo di ${ov} giorn${ov===1?'o':'i'}.`);}}if(d.notifToggles.esc){const le=d.maintenance.filter(m=>m.rimozione).slice(-1)[0]?.date;if(daysSince(le)>=d.intervals.esc)sendNotif('🧹 Pulizia escrementi','È ora di rimuovere gli escrementi dal terrario.');}if(d.notifToggles.deep){const ld=d.maintenance.filter(m=>m.profonda).slice(-1)[0]?.date;if(daysSince(ld)>=d.intervals.deep)sendNotif('🏠 Pulizia profonda','Tempo di cambiare il substrato!');}}
-function sendNotif(title,body){const now=Date.now();if(lastNotifTime[title]&&(now-lastNotifTime[title])<3600000)return;lastNotifTime[title]=now;try{new Notification(title,{body,tag:title,renotify:false});}catch(e){}}
+function selectReptile(id) {
+  db.activeId = id;
+  saveDB();
+  renderReptileSelector();
+  renderCurrentPage();
+}
 
-if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-renderHome();updateNotifToggles();
-setInterval(()=>{if(Notification.permission==='granted')checkAndNotify();},4*60*60*1000);
-setTimeout(()=>{if(Notification.permission==='granted')checkAndNotify();},2000);
+function openAddReptile() {
+  newAvatarData = '';
+  document.getElementById('new-rep-name').value = '';
+  document.getElementById('new-rep-species').value = '';
+  document.getElementById('new-rep-birthday').value = '';
+  document.getElementById('new-rep-emoji').value = '🐍';
+  document.getElementById('new-avatar-preview').innerHTML = '🐍';
+  document.getElementById('addReptileModal').classList.add('open');
+}
+function closeAddReptile() { document.getElementById('addReptileModal').classList.remove('open'); }
+
+function saveNewReptile() {
+  const name = document.getElementById('new-rep-name').value.trim();
+  if (!name) { showToast('⚠️ Inserisci un nome'); return; }
+  const rep = defaultReptile(
+    name,
+    document.getElementById('new-rep-species').value.trim(),
+    document.getElementById('new-rep-emoji').value.trim() || '🐍',
+    document.getElementById('new-rep-birthday').value,
+    newAvatarData
+  );
+  db.reptiles.push(rep);
+  db.activeId = rep.id;
+  saveDB();
+  closeAddReptile();
+  renderReptileSelector();
+  renderCurrentPage();
+  showToast('✅ Rettile aggiunto!');
+}
+
+function handleNewAvatarUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    newAvatarData = ev.target.result;
+    const p = document.getElementById('new-avatar-preview');
+    p.innerHTML = `<img src="${newAvatarData}">`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleAvatarUpload(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const rep = activeRep(); rep.avatar = ev.target.result;
+    saveDB();
+    renderSettingsAvatar();
+    renderReptileSelector();
+    renderHome();
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════
+function daysSince(ds) { if (!ds) return 9999; return Math.floor((new Date() - new Date(ds)) / 86400000); }
+function formatDate(ds) { if (!ds) return '—'; const [y,m,d] = ds.split('-'); return `${d}/${m}/${y}`; }
+function todayISO() { return new Date().toISOString().slice(0,10); }
+function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+
+function calcAge(birthday) {
+  if (!birthday) return null;
+  const birth = new Date(birthday);
+  const now = new Date();
+  let years = now.getFullYear() - birth.getFullYear();
+  let months = now.getMonth() - birth.getMonth();
+  if (months < 0) { years--; months += 12; }
+  if (years > 0) return `${years}a ${months}m`;
+  const days = Math.floor((now - birth) / 86400000);
+  if (months > 0) return `${months}m`;
+  return `${days}g`;
+}
+
+// ═══════════════════════════════════════════════════════
+// HOME
+// ═══════════════════════════════════════════════════════
+function renderHome() {
+  const rep = activeRep(); if (!rep) return;
+
+  // Avatar
+  const avatarEl = document.getElementById('hero-avatar');
+  if (rep.avatar) avatarEl.innerHTML = `<img src="${rep.avatar}">`;
+  else avatarEl.textContent = rep.emoji || '🐍';
+
+  document.getElementById('hero-name').textContent = rep.name;
+  document.getElementById('hero-species').textContent = rep.species || '';
+
+  // Stats
+  const lastW = rep.weights.length ? rep.weights[rep.weights.length-1].peso : '—';
+  document.getElementById('hs-peso').textContent = lastW;
+
+  const lastFD = rep.feeding.length ? rep.feeding[rep.feeding.length-1].date : null;
+  const dsf = daysSince(lastFD);
+  const nextF = Math.max(0, rep.intervals.feed - dsf);
+  const nfEl = document.getElementById('hs-nextfeed');
+  nfEl.textContent = lastFD ? nextF : '—';
+  nfEl.className = 'hero-stat-val' + (nextF===0?' warn': dsf>rep.intervals.feed?' danger':'');
+
+  const age = calcAge(rep.birthday);
+  document.getElementById('hs-age').textContent = age || '—';
+
+  // Temperatura
+  const t = rep.temp;
+  document.getElementById('temp-hot-display').textContent = t ? `${t.hotMin}°/${t.hotMax}°` : '—°/—°';
+  document.getElementById('temp-cool-display').textContent = t ? `${t.coolMin}°/${t.coolMax}°` : '—°/—°';
+
+  // Alerts
+  const alerts = [];
+  if (lastFD) {
+    const over = dsf - rep.intervals.feed;
+    if (over >= 0) alerts.push({type: over>2?'danger':'warn', msg: over===0?'Oggi è il giorno del pasto!':`Pasto in ritardo di ${over} giorn${over===1?'o':'i'}`});
+    else if (nextF <= 2) alerts.push({type:'warn', msg:`Pasto tra ${nextF} giorn${nextF===1?'o':'i'}`});
+    else alerts.push({type:'ok', msg:`Prossimo pasto tra ${nextF} giorni`});
+  }
+  const lastDeep = rep.puliziaProfonda.length ? rep.puliziaProfonda[rep.puliziaProfonda.length-1].date : null;
+  const dsDeep = daysSince(lastDeep);
+  const remainDeep = rep.intervals.deep - dsDeep;
+  if (remainDeep <= 0) alerts.push({type:'danger', msg:'Pulizia profonda necessaria!'});
+  else if (remainDeep <= 5) alerts.push({type:'warn', msg:`Pulizia profonda tra ${remainDeep} giorni`});
+  else alerts.push({type:'ok', msg:`Pulizia profonda tra ${remainDeep} giorni`});
+
+  document.getElementById('alerts-container').innerHTML = alerts.map(a =>
+    `<div class="alert-chip ${a.type}"><div class="dot"></div>${a.msg}</div>`
+  ).join('');
+
+  // Mini chart
+  const chart = document.getElementById('home-chart');
+  const recent = rep.feeding.slice(-5);
+  if (!recent.length) { chart.innerHTML='<div class="empty-msg">Nessun pasto registrato</div>'; return; }
+  chart.innerHTML = recent.map(f => {
+    const ok = f.esito==='Mangiato';
+    const pct = Math.min(100, Math.round(f.weight/12*100*4));
+    return `<div class="mini-bar-row"><div class="mini-bar-date">${formatDate(f.date)}</div><div class="mini-bar-track"><div class="mini-bar-fill ${!ok?'refused':''}" style="width:${pct}%"></div></div><div class="mini-bar-icon">${ok?'✅':'❌'}</div></div>`;
+  }).join('');
+}
+
+// TEMPERATURE MODAL
+function openTempModal() {
+  const t = activeRep().temp;
+  document.getElementById('temp-hot-min').value = t.hotMin;
+  document.getElementById('temp-hot-max').value = t.hotMax;
+  document.getElementById('temp-cool-min').value = t.coolMin;
+  document.getElementById('temp-cool-max').value = t.coolMax;
+  document.getElementById('tempModal').classList.add('open');
+}
+function closeTempModal() { document.getElementById('tempModal').classList.remove('open'); }
+function saveTemp() {
+  const rep = activeRep();
+  rep.temp = {
+    hotMin: parseFloat(document.getElementById('temp-hot-min').value)||29,
+    hotMax: parseFloat(document.getElementById('temp-hot-max').value)||32,
+    coolMin: parseFloat(document.getElementById('temp-cool-min').value)||24,
+    coolMax: parseFloat(document.getElementById('temp-cool-max').value)||27
+  };
+  saveDB(); closeTempModal(); renderHome(); showToast('✅ Temperatura salvata!');
+}
+
+// ═══════════════════════════════════════════════════════
+// FEEDING
+// ═══════════════════════════════════════════════════════
+function renderFeed() {
+  const rep = activeRep();
+  const rows = [...rep.feeding].reverse();
+  const tbody = document.getElementById('feed-tbody');
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-msg">Nessun pasto</td></tr>'; return; }
+  tbody.innerHTML = rows.map((f,i) => {
+    const realIdx = rep.feeding.length - 1 - i;
+    const b = f.esito==='Mangiato'?'badge-ok': f.esito==='Parziale'?'badge-warn':'badge-danger';
+    const defBadge = f.defecazione ? '<span class="badge badge-ok">Sì</span>' : '<span class="badge badge-no">No</span>';
+    return `<tr>
+      <td>${formatDate(f.date)}</td>
+      <td>${f.weight}g</td>
+      <td><span class="badge ${b}">${f.esito}</span></td>
+      <td>${defBadge}</td>
+      <td><div class="row-actions">
+        <button class="act-btn" onclick="editFeed(${realIdx})" title="Modifica">✏️</button>
+        <button class="act-btn del" onclick="deleteFeed(${realIdx})" title="Elimina">🗑</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+}
+
+function openAddFeed() {
+  document.getElementById('feed-form-title').textContent = 'Nuovo pasto';
+  document.getElementById('feed-edit-idx').value = -1;
+  document.getElementById('feed-date').value = todayISO();
+  document.getElementById('feed-weight').value = '';
+  document.getElementById('feed-esito').value = 'Mangiato';
+  document.getElementById('feed-defecazione').value = 'false';
+  document.getElementById('feed-note').value = '';
+  document.getElementById('feed-add-form').style.display = 'block';
+}
+function closeFeedForm() { document.getElementById('feed-add-form').style.display='none'; }
+
+function editFeed(idx) {
+  const f = activeRep().feeding[idx];
+  document.getElementById('feed-form-title').textContent = 'Modifica pasto';
+  document.getElementById('feed-edit-idx').value = idx;
+  document.getElementById('feed-date').value = f.date;
+  document.getElementById('feed-weight').value = f.weight;
+  document.getElementById('feed-esito').value = f.esito;
+  document.getElementById('feed-defecazione').value = f.defecazione ? 'true' : 'false';
+  document.getElementById('feed-note').value = f.note || '';
+  document.getElementById('feed-add-form').style.display = 'block';
+  document.getElementById('feed-add-form').scrollIntoView({behavior:'smooth'});
+}
+
+function saveFeed() {
+  const date = document.getElementById('feed-date').value;
+  const weight = parseFloat(document.getElementById('feed-weight').value);
+  if (!date || isNaN(weight)) { showToast('⚠️ Inserisci data e peso'); return; }
+  const entry = { date, weight, esito: document.getElementById('feed-esito').value, defecazione: document.getElementById('feed-defecazione').value==='true', note: document.getElementById('feed-note').value.trim() };
+  const rep = activeRep();
+  const idx = parseInt(document.getElementById('feed-edit-idx').value);
+  if (idx >= 0) rep.feeding[idx] = entry;
+  else rep.feeding.push(entry);
+  rep.feeding.sort((a,b) => a.date.localeCompare(b.date));
+  saveDB(); closeFeedForm(); renderFeed(); scheduleNotifications(); showToast('✅ Pasto salvato!');
+}
+
+function deleteFeed(idx) {
+  showConfirm('Elimina pasto', 'Vuoi eliminare questo pasto?', () => {
+    activeRep().feeding.splice(idx,1); saveDB(); renderFeed(); showToast('🗑 Eliminato');
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// IGIENE — ESCREMENTI
+// ═══════════════════════════════════════════════════════
+function renderEsc() {
+  const rep = activeRep();
+  const last = rep.escrementi.length ? rep.escrementi[rep.escrementi.length-1].date : null;
+  document.getElementById('last-esc-info').textContent = last ? `Ultima: ${formatDate(last)} (${daysSince(last)} giorni fa)` : 'Nessuna registrazione';
+  const rows = [...rep.escrementi].reverse();
+  const tbody = document.getElementById('esc-tbody');
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="3" class="empty-msg">Nessun dato</td></tr>'; return; }
+  tbody.innerHTML = rows.map((e,i) => {
+    const realIdx = rep.escrementi.length - 1 - i;
+    return `<tr><td>${formatDate(e.date)}</td><td style="color:var(--muted);font-size:12px">${e.note||''}</td><td><div class="row-actions"><button class="act-btn" onclick="editEsc(${realIdx})">✏️</button><button class="act-btn del" onclick="deleteEsc(${realIdx})">🗑</button></div></td></tr>`;
+  }).join('');
+}
+
+function openAddEsc() { document.getElementById('esc-edit-idx').value=-1; document.getElementById('esc-date').value=todayISO(); document.getElementById('esc-note').value=''; document.getElementById('esc-add-form').style.display='block'; }
+function closeEscForm() { document.getElementById('esc-add-form').style.display='none'; }
+function editEsc(idx) { const e=activeRep().escrementi[idx]; document.getElementById('esc-edit-idx').value=idx; document.getElementById('esc-date').value=e.date; document.getElementById('esc-note').value=e.note||''; document.getElementById('esc-add-form').style.display='block'; }
+function saveEsc() {
+  const date=document.getElementById('esc-date').value; if(!date){showToast('⚠️ Inserisci data');return;}
+  const entry={date, note:document.getElementById('esc-note').value.trim()};
+  const rep=activeRep(); const idx=parseInt(document.getElementById('esc-edit-idx').value);
+  if(idx>=0) rep.escrementi[idx]=entry; else rep.escrementi.push(entry);
+  rep.escrementi.sort((a,b)=>a.date.localeCompare(b.date));
+  saveDB(); closeEscForm(); renderEsc(); showToast('✅ Salvato!');
+}
+function deleteEsc(idx) { showConfirm('Elimina', 'Elimina questo record?', ()=>{ activeRep().escrementi.splice(idx,1); saveDB(); renderEsc(); showToast('🗑 Eliminato'); }); }
+
+// ═══════════════════════════════════════════════════════
+// IGIENE — PULIZIA PROFONDA
+// ═══════════════════════════════════════════════════════
+function renderDeep() {
+  const rep = activeRep();
+  const last = rep.puliziaProfonda.length ? rep.puliziaProfonda[rep.puliziaProfonda.length-1].date : null;
+  document.getElementById('last-deep-info').textContent = last ? `Ultima: ${formatDate(last)} (${daysSince(last)} giorni fa)` : 'Nessuna registrazione';
+  const rows = [...rep.puliziaProfonda].reverse();
+  const tbody = document.getElementById('deep-tbody');
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="3" class="empty-msg">Nessun dato</td></tr>'; return; }
+  tbody.innerHTML = rows.map((e,i) => {
+    const realIdx = rep.puliziaProfonda.length - 1 - i;
+    return `<tr><td>${formatDate(e.date)}</td><td style="color:var(--muted);font-size:12px">${e.note||''}</td><td><div class="row-actions"><button class="act-btn" onclick="editDeep(${realIdx})">✏️</button><button class="act-btn del" onclick="deleteDeep(${realIdx})">🗑</button></div></td></tr>`;
+  }).join('');
+}
+
+function openAddDeep() { document.getElementById('deep-edit-idx').value=-1; document.getElementById('deep-date').value=todayISO(); document.getElementById('deep-note').value=''; document.getElementById('deep-add-form').style.display='block'; }
+function closeDeepForm() { document.getElementById('deep-add-form').style.display='none'; }
+function editDeep(idx) { const e=activeRep().puliziaProfonda[idx]; document.getElementById('deep-edit-idx').value=idx; document.getElementById('deep-date').value=e.date; document.getElementById('deep-note').value=e.note||''; document.getElementById('deep-add-form').style.display='block'; }
+function saveDeep() {
+  const date=document.getElementById('deep-date').value; if(!date){showToast('⚠️ Inserisci data');return;}
+  const entry={date, note:document.getElementById('deep-note').value.trim()};
+  const rep=activeRep(); const idx=parseInt(document.getElementById('deep-edit-idx').value);
+  if(idx>=0) rep.puliziaProfonda[idx]=entry; else rep.puliziaProfonda.push(entry);
+  rep.puliziaProfonda.sort((a,b)=>a.date.localeCompare(b.date));
+  saveDB(); closeDeepForm(); renderDeep(); scheduleNotifications(); showToast('✅ Salvato!');
+}
+function deleteDeep(idx) { showConfirm('Elimina', 'Elimina questo record?', ()=>{ activeRep().puliziaProfonda.splice(idx,1); saveDB(); renderDeep(); showToast('🗑 Eliminato'); }); }
+
+function renderMaint() { renderEsc(); renderDeep(); }
+
+// ═══════════════════════════════════════════════════════
+// SALUTE
+// ═══════════════════════════════════════════════════════
+function toggleHealthForm() {
+  const t = document.getElementById('health-type').value;
+  document.getElementById('health-peso-group').style.display = t==='peso'?'':'none';
+  document.getElementById('health-muta-group').style.display = t==='muta'?'':'none';
+}
+
+function renderHealth() {
+  const rep = activeRep();
+  const lastW = rep.weights.length ? rep.weights[rep.weights.length-1] : null;
+  const lastM = rep.mute.length ? rep.mute[rep.mute.length-1] : null;
+  document.getElementById('current-weight').textContent = lastW ? lastW.peso : '—';
+  document.getElementById('last-muta').textContent = lastM ? formatDate(lastM.date) : '—';
+  document.getElementById('last-muta-days').textContent = lastM ? `${daysSince(lastM.date)} giorni fa` : '';
+
+  // Weight chart
+  renderWeightChart(rep);
+
+  // Peso table
+  const pesos = [...rep.weights].reverse();
+  document.getElementById('peso-tbody').innerHTML = pesos.length
+    ? pesos.map((w,i) => {
+        const prev = pesos[i+1];
+        const delta = prev ? w.peso-prev.peso : null;
+        const dStr = delta!==null ? `<span class="${delta>=0?'delta-pos':'delta-neg'}">${delta>=0?'+':''}${delta}g</span>` : '—';
+        const realIdx = rep.weights.length-1-i;
+        return `<tr><td>${formatDate(w.date)}</td><td>${w.peso}g</td><td>${dStr}</td><td><div class="row-actions"><button class="act-btn" onclick="editWeight(${realIdx})">✏️</button><button class="act-btn del" onclick="deleteWeight(${realIdx})">🗑</button></div></td></tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="empty-msg">Nessun dato</td></tr>';
+
+  // Muta table
+  const mute = [...rep.mute].reverse();
+  document.getElementById('muta-tbody').innerHTML = mute.length
+    ? mute.map((m,i) => {
+        const realIdx = rep.mute.length-1-i;
+        const badge = m.completa==='Sì' ? '<span class="badge badge-gold">Sì</span>' : '<span class="badge badge-no">No</span>';
+        return `<tr><td>${formatDate(m.date)}</td><td>${badge}</td><td><div class="row-actions"><button class="act-btn" onclick="editMuta(${realIdx})">✏️</button><button class="act-btn del" onclick="deleteMuta(${realIdx})">🗑</button></div></td></tr>`;
+      }).join('')
+    : '<tr><td colspan="3" class="empty-msg">Nessuna muta</td></tr>';
+}
+
+function renderWeightChart(rep) {
+  const canvas = document.getElementById('weightChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (weightChartInstance) { weightChartInstance.destroy(); weightChartInstance = null; }
+  if (!rep.weights.length) { ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+  const sorted = [...rep.weights].sort((a,b)=>a.date.localeCompare(b.date));
+  const labels = sorted.map(w => formatDate(w.date));
+  const data = sorted.map(w => w.peso);
+  weightChartInstance = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [{
+        data,
+        borderColor: '#c9a84c',
+        backgroundColor: 'rgba(201,168,76,0.08)',
+        borderWidth: 2,
+        pointBackgroundColor: '#e8c96a',
+        pointRadius: 4,
+        tension: 0.3,
+        fill: true
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: '#6b6b7a', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
+        y: { ticks: { color: '#6b6b7a', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+      }
+    }
+  });
+}
+
+function openAddHealth() {
+  document.getElementById('health-form-title').textContent = 'Nuovo rilevamento';
+  document.getElementById('health-edit-idx').value = -1;
+  document.getElementById('health-edit-type').value = '';
+  document.getElementById('health-date').value = todayISO();
+  document.getElementById('health-peso').value = '';
+  document.getElementById('health-type').value = 'peso';
+  toggleHealthForm();
+  document.getElementById('health-add-form').style.display = 'block';
+}
+function closeHealthForm() { document.getElementById('health-add-form').style.display='none'; }
+
+function editWeight(idx) {
+  const w = activeRep().weights[idx];
+  document.getElementById('health-form-title').textContent = 'Modifica peso';
+  document.getElementById('health-edit-idx').value = idx;
+  document.getElementById('health-edit-type').value = 'peso';
+  document.getElementById('health-type').value = 'peso';
+  toggleHealthForm();
+  document.getElementById('health-date').value = w.date;
+  document.getElementById('health-peso').value = w.peso;
+  document.getElementById('health-add-form').style.display = 'block';
+  document.getElementById('health-add-form').scrollIntoView({behavior:'smooth'});
+}
+function editMuta(idx) {
+  const m = activeRep().mute[idx];
+  document.getElementById('health-form-title').textContent = 'Modifica muta';
+  document.getElementById('health-edit-idx').value = idx;
+  document.getElementById('health-edit-type').value = 'muta';
+  document.getElementById('health-type').value = 'muta';
+  toggleHealthForm();
+  document.getElementById('health-date').value = m.date;
+  document.getElementById('health-muta').value = m.completa;
+  document.getElementById('health-add-form').style.display = 'block';
+  document.getElementById('health-add-form').scrollIntoView({behavior:'smooth'});
+}
+
+function saveHealth() {
+  const type = document.getElementById('health-edit-type').value || document.getElementById('health-type').value;
+  const date = document.getElementById('health-date').value;
+  if (!date) { showToast('⚠️ Inserisci la data'); return; }
+  const rep = activeRep();
+  const idx = parseInt(document.getElementById('health-edit-idx').value);
+  if (type==='peso') {
+    const peso = parseFloat(document.getElementById('health-peso').value);
+    if (isNaN(peso)) { showToast('⚠️ Inserisci il peso'); return; }
+    const entry = { date, peso };
+    if (idx>=0) rep.weights[idx]=entry; else rep.weights.push(entry);
+    rep.weights.sort((a,b)=>a.date.localeCompare(b.date));
+  } else {
+    const entry = { date, completa: document.getElementById('health-muta').value };
+    if (idx>=0) rep.mute[idx]=entry; else rep.mute.push(entry);
+    rep.mute.sort((a,b)=>a.date.localeCompare(b.date));
+  }
+  saveDB(); closeHealthForm(); renderHealth(); showToast('✅ Salvato!');
+}
+
+function deleteWeight(idx) { showConfirm('Elimina peso','Eliminare questo rilevamento?',()=>{ activeRep().weights.splice(idx,1); saveDB(); renderHealth(); showToast('🗑 Eliminato'); }); }
+function deleteMuta(idx) { showConfirm('Elimina muta','Eliminare questa muta?',()=>{ activeRep().mute.splice(idx,1); saveDB(); renderHealth(); showToast('🗑 Eliminato'); }); }
+
+// ═══════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════
+function renderSettings() {
+  const rep = activeRep(); if (!rep) return;
+  renderSettingsAvatar();
+  document.getElementById('snake-name').value = rep.name || '';
+  document.getElementById('snake-species').value = rep.species || '';
+  document.getElementById('snake-birthday').value = rep.birthday || '';
+  document.getElementById('snake-emoji').value = rep.emoji || '🐍';
+  document.getElementById('interval-feed').value = rep.intervals.feed;
+  document.getElementById('interval-deep').value = rep.intervals.deep;
+}
+
+function renderSettingsAvatar() {
+  const rep = activeRep();
+  const p = document.getElementById('settings-avatar-preview');
+  if (rep.avatar) p.innerHTML = `<img src="${rep.avatar}">`;
+  else p.textContent = rep.emoji || '🐍';
+}
+
+function saveSettings() {
+  const rep = activeRep();
+  rep.name = document.getElementById('snake-name').value.trim() || rep.name;
+  rep.species = document.getElementById('snake-species').value.trim();
+  rep.birthday = document.getElementById('snake-birthday').value;
+  rep.emoji = document.getElementById('snake-emoji').value.trim() || '🐍';
+  saveDB(); renderReptileSelector(); renderHome(); showToast('✅ Info salvate!');
+}
+
+function saveIntervals() {
+  const rep = activeRep();
+  rep.intervals.feed = parseInt(document.getElementById('interval-feed').value)||7;
+  rep.intervals.deep = parseInt(document.getElementById('interval-deep').value)||30;
+  saveDB(); scheduleNotifications(); showToast('✅ Intervalli salvati!');
+}
+
+function confirmDeleteReptile() {
+  if (db.reptiles.length <= 1) { showToast('⚠️ Non puoi eliminare l\'unico rettile'); return; }
+  showConfirm('Elimina rettile', `Eliminare ${activeRep().name} e tutti i suoi dati?`, () => {
+    db.reptiles = db.reptiles.filter(r => r.id !== db.activeId);
+    db.activeId = db.reptiles[0].id;
+    saveDB(); renderReptileSelector(); renderCurrentPage();
+    document.querySelector('[data-page="home"]').click();
+    showToast('🗑 Rettile eliminato');
+  });
+}
+
+function exportData() {
+  const b = new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const u = URL.createObjectURL(b); const a = document.createElement('a');
+  a.href=u; a.download='reptilEden-backup.json'; a.click(); URL.revokeObjectURL(u);
+  showToast('📁 Backup esportato!');
+}
+
+// ═══════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ═══════════════════════════════════════════════════════
+function openNotifModal() { document.getElementById('notifModal').classList.add('open'); updateNotifStatus(); updateNotifToggles(); }
+function closeNotifModal() { document.getElementById('notifModal').classList.remove('open'); }
+
+function updateNotifStatus() {
+  const el = document.getElementById('notif-status');
+  if (!('Notification' in window)) { el.textContent='❌ Browser non supportato'; return; }
+  const p = Notification.permission;
+  if (p==='granted') { el.innerHTML='<span style="color:var(--ok)">✅ Notifiche attive</span>'; document.getElementById('notifBtn').classList.add('active'); }
+  else if (p==='denied') el.innerHTML='<span style="color:var(--danger)">❌ Bloccate — abilita nelle impostazioni del browser</span>';
+  else el.innerHTML='<span style="color:var(--warn)">⚠️ Non ancora abilitate</span>';
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) { showToast('❌ Non supportato'); return; }
+  const p = await Notification.requestPermission();
+  updateNotifStatus();
+  if (p==='granted') { showToast('🔔 Notifiche abilitate!'); closeNotifModal(); scheduleNotifications(); }
+  else showToast('❌ Permesso negato');
+}
+
+function toggleNotif(k) {
+  const rep = activeRep();
+  rep.notifToggles[k] = !rep.notifToggles[k];
+  saveDB(); updateNotifToggles();
+}
+function updateNotifToggles() {
+  const rep = activeRep();
+  ['feed','deep'].forEach(k => {
+    const el = document.getElementById('toggle-'+k);
+    if (!el) return;
+    rep.notifToggles[k] ? el.classList.add('on') : el.classList.remove('on');
+  });
+}
+
+function scheduleNotifications() { if (Notification.permission==='granted') checkAndNotify(); }
+
+let lastNotifTime = {};
+function checkAndNotify() {
+  db.reptiles.forEach(rep => {
+    if (rep.notifToggles.feed) {
+      const lf = rep.feeding.length ? rep.feeding[rep.feeding.length-1].date : null;
+      const ds = daysSince(lf);
+      if (ds >= rep.intervals.feed) {
+        const ov = ds - rep.intervals.feed;
+        sendNotif(`${rep.emoji} ${rep.name} — ${ov===0?'Giorno del pasto!':'Pasto in ritardo!'}`, ov===0?'È ora di dare da mangiare.':`In ritardo di ${ov} giorni.`);
+      }
+    }
+    if (rep.notifToggles.deep) {
+      const ld = rep.puliziaProfonda.length ? rep.puliziaProfonda[rep.puliziaProfonda.length-1].date : null;
+      if (daysSince(ld) >= rep.intervals.deep) sendNotif(`${rep.emoji} ${rep.name} — Pulizia profonda`, 'Tempo di cambiare il substrato!');
+    }
+  });
+}
+
+function sendNotif(title, body) {
+  const now = Date.now();
+  if (lastNotifTime[title] && (now-lastNotifTime[title]) < 3600000) return;
+  lastNotifTime[title] = now;
+  try { new Notification(title, {body, tag:title, renotify:false}); } catch(e) {}
+}
+
+// ═══════════════════════════════════════════════════════
+// CONFIRM DIALOG
+// ═══════════════════════════════════════════════════════
+function showConfirm(title, msg, cb) {
+  document.getElementById('confirm-title').textContent = title;
+  document.getElementById('confirm-msg').textContent = msg;
+  confirmCallback = cb;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); confirmCallback=null; }
+function confirmOk() { if (confirmCallback) confirmCallback(); closeConfirm(); }
+
+// ═══════════════════════════════════════════════════════
+// SERVICE WORKER
+// ═══════════════════════════════════════════════════════
+if ('serviceWorker' in navigator) window.addEventListener('load', ()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderReptileSelector();
+renderHome();
+updateNotifToggles();
+setInterval(()=>{ if (Notification.permission==='granted') checkAndNotify(); }, 4*60*60*1000);
+setTimeout(()=>{ if (Notification.permission==='granted') checkAndNotify(); }, 2000);
 </script>
 </body>
 </html>
