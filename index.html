@@ -255,17 +255,26 @@ input[type="number"].form-input{-moz-appearance:textfield;}
       <div class="alerts" id="alerts-container"></div>
 
       <div class="card">
-        <div class="card-label" style="margin-bottom:10px;">Temperatura terrario</div>
+        <div class="card-label" style="margin-bottom:10px;justify-content:space-between;">
+          <span style="display:flex;align-items:center;gap:6px;"><span style="width:12px;height:1px;background:var(--gold);opacity:0.6;display:inline-block;"></span>Temperatura terrario</span>
+          <button class="temp-edit-btn" onclick="openTempModal()" style="position:static;font-size:13px;padding:2px 6px;border-radius:6px;border:1px solid var(--border);background:var(--card2);">✏️ Modifica</button>
+        </div>
         <div class="temp-zones">
           <div class="temp-zone-card">
             <div class="temp-zone-lbl">🔥 Zona calda</div>
             <div class="temp-range hot" id="temp-hot-display">—°/—°</div>
-            <button class="temp-edit-btn" onclick="openTempModal()">✏️</button>
           </div>
           <div class="temp-zone-card">
             <div class="temp-zone-lbl">❄️ Zona fredda</div>
             <div class="temp-range cool" id="temp-cool-display">—°/—°</div>
           </div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2);">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">💧</span>
+            <span style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:500;">Umidità</span>
+          </div>
+          <div style="font-family:'DM Serif Display',serif;font-size:20px;color:#5b9bd4;" id="humidity-display">—%</div>
         </div>
       </div>
 
@@ -305,7 +314,7 @@ input[type="number"].form-input{-moz-appearance:textfield;}
       </div>
       <div class="card">
         <div class="table-wrap">
-          <table><thead><tr><th>Data</th><th>g</th><th>Esito</th><th>Def.</th><th></th></tr></thead><tbody id="feed-tbody"></tbody></table>
+          <table><thead><tr><th>Data</th><th>g</th><th>%</th><th>Esito</th><th>Def.</th><th>Note</th><th></th></tr></thead><tbody id="feed-tbody"></tbody></table>
         </div>
       </div>
     </div>
@@ -433,7 +442,10 @@ input[type="number"].form-input{-moz-appearance:textfield;}
 
       <div class="card" style="margin-top:4px">
         <div class="settings-section-title">Dati</div>
-        <button class="btn btn-outline" onclick="exportData()">📁 Esporta backup JSON</button>
+        <button class="btn btn-outline" onclick="exportData()" style="margin-bottom:10px;">📁 Esporta backup JSON</button>
+        <button class="btn btn-outline" onclick="document.getElementById('import-file').click()">📂 Importa backup JSON</button>
+        <input type="file" id="import-file" accept=".json,application/json" style="display:none" onchange="importData(event)">
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;">L'importazione sovrascriverà tutti i dati attuali.</p>
       </div>
     </div>
 
@@ -487,7 +499,14 @@ input[type="number"].form-input{-moz-appearance:textfield;}
         <div><label class="form-label" style="font-size:9px">MAX</label><input type="number" class="form-input" id="temp-cool-max" placeholder="es. 27"></div>
       </div>
     </div>
-    <button class="btn btn-primary" onclick="saveTemp()">Salva temperatura</button>
+    <div class="form-group">
+      <label class="form-label">💧 Umidità — range (%)</label>
+      <div class="form-row">
+        <div><label class="form-label" style="font-size:9px">MIN</label><input type="number" class="form-input" id="humid-min" placeholder="es. 40"></div>
+        <div><label class="form-label" style="font-size:9px">MAX</label><input type="number" class="form-input" id="humid-max" placeholder="es. 60"></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="saveTemp()">Salva</button>
   </div>
 </div>
 
@@ -542,7 +561,7 @@ function defaultReptile(name, species, emoji, birthday, avatar) {
     avatar: avatar || '',
     intervals: { feed: 7, deep: 30 },
     notifToggles: { feed: true, deep: true },
-    temp: { hotMin: 29, hotMax: 32, coolMin: 24, coolMax: 27 },
+    temp: { hotMin: 29, hotMax: 32, coolMin: 24, coolMax: 27, humidMin: 40, humidMax: 60 },
     feeding: [],
     escrementi: [],
     puliziaProfonda: [],
@@ -729,6 +748,8 @@ function renderHome() {
   const t = rep.temp;
   document.getElementById('temp-hot-display').textContent = t ? `${t.hotMin}°/${t.hotMax}°` : '—°/—°';
   document.getElementById('temp-cool-display').textContent = t ? `${t.coolMin}°/${t.coolMax}°` : '—°/—°';
+  const humidEl = document.getElementById('humidity-display');
+  if (humidEl) humidEl.textContent = t && t.humidMin ? `${t.humidMin}% / ${t.humidMax}%` : '—%';
 
   // Alerts
   const alerts = [];
@@ -767,6 +788,8 @@ function openTempModal() {
   document.getElementById('temp-hot-max').value = t.hotMax;
   document.getElementById('temp-cool-min').value = t.coolMin;
   document.getElementById('temp-cool-max').value = t.coolMax;
+  document.getElementById('humid-min').value = t.humidMin || 40;
+  document.getElementById('humid-max').value = t.humidMax || 60;
   document.getElementById('tempModal').classList.add('open');
 }
 function closeTempModal() { document.getElementById('tempModal').classList.remove('open'); }
@@ -776,7 +799,9 @@ function saveTemp() {
     hotMin: parseFloat(document.getElementById('temp-hot-min').value)||29,
     hotMax: parseFloat(document.getElementById('temp-hot-max').value)||32,
     coolMin: parseFloat(document.getElementById('temp-cool-min').value)||24,
-    coolMax: parseFloat(document.getElementById('temp-cool-max').value)||27
+    coolMax: parseFloat(document.getElementById('temp-cool-max').value)||27,
+    humidMin: parseFloat(document.getElementById('humid-min').value)||40,
+    humidMax: parseFloat(document.getElementById('humid-max').value)||60
   };
   saveDB(); closeTempModal(); renderHome(); showToast('✅ Temperatura salvata!');
 }
@@ -788,16 +813,20 @@ function renderFeed() {
   const rep = activeRep();
   const rows = [...rep.feeding].reverse();
   const tbody = document.getElementById('feed-tbody');
-  if (!rows.length) { tbody.innerHTML='<tr><td colspan="5" class="empty-msg">Nessun pasto</td></tr>'; return; }
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="7" class="empty-msg">Nessun pasto</td></tr>'; return; }
+  const lastWeight = rep.weights.length ? rep.weights[rep.weights.length-1].peso : null;
   tbody.innerHTML = rows.map((f,i) => {
     const realIdx = rep.feeding.length - 1 - i;
     const b = f.esito==='Mangiato'?'badge-ok': f.esito==='Parziale'?'badge-warn':'badge-danger';
     const defBadge = f.defecazione ? '<span class="badge badge-ok">Sì</span>' : '<span class="badge badge-no">No</span>';
+    const pct = lastWeight ? (f.weight / lastWeight * 100).toFixed(1) + '%' : '—';
     return `<tr>
       <td>${formatDate(f.date)}</td>
       <td>${f.weight}g</td>
+      <td style="color:var(--muted);font-size:11px">${pct}</td>
       <td><span class="badge ${b}">${f.esito}</span></td>
       <td>${defBadge}</td>
+      <td style="color:var(--muted);font-size:11px;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.note||''}</td>
       <td><div class="row-actions">
         <button class="act-btn" onclick="editFeed(${realIdx})" title="Modifica">✏️</button>
         <button class="act-btn del" onclick="deleteFeed(${realIdx})" title="Elimina">🗑</button>
@@ -956,13 +985,19 @@ function renderHealth() {
 function renderWeightChart(rep) {
   const canvas = document.getElementById('weightChart');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
   if (weightChartInstance) { weightChartInstance.destroy(); weightChartInstance = null; }
-  if (!rep.weights.length) { ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+  if (!rep.weights.length) return;
   const sorted = [...rep.weights].sort((a,b)=>a.date.localeCompare(b.date));
   const labels = sorted.map(w => formatDate(w.date));
   const data = sorted.map(w => w.peso);
-  weightChartInstance = new Chart(ctx, {
+  // Fix explicit pixel size to avoid responsive resize loop
+  const wrap = canvas.parentElement;
+  const w = wrap.clientWidth || 360;
+  canvas.width = w;
+  canvas.height = 160;
+  canvas.style.width = w + 'px';
+  canvas.style.height = '160px';
+  weightChartInstance = new Chart(canvas, {
     type: 'line',
     data: {
       labels,
@@ -972,17 +1007,18 @@ function renderWeightChart(rep) {
         backgroundColor: 'rgba(201,168,76,0.08)',
         borderWidth: 2,
         pointBackgroundColor: '#e8c96a',
-        pointRadius: 4,
-        tension: 0.3,
+        pointRadius: 5,
+        tension: 0.35,
         fill: true
       }]
     },
     options: {
-      responsive: true,
+      responsive: false,
+      animation: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { ticks: { color: '#6b6b7a', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-        y: { ticks: { color: '#6b6b7a', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.04)' } }
+        x: { ticks: { color: '#6b6b7a', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { ticks: { color: '#6b6b7a', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.05)' } }
       }
     }
   });
@@ -1101,6 +1137,27 @@ function exportData() {
   const u = URL.createObjectURL(b); const a = document.createElement('a');
   a.href=u; a.download='reptilEden-backup.json'; a.click(); URL.revokeObjectURL(u);
   showToast('📁 Backup esportato!');
+}
+
+function importData(e) {
+  const file = e.target.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!imported.reptiles || !Array.isArray(imported.reptiles)) { showToast('⚠️ File non valido'); return; }
+      showConfirm('Importa backup', 'Vuoi sovrascrivere tutti i dati attuali con il backup?', () => {
+        db = imported;
+        if (!db.activeId && db.reptiles.length) db.activeId = db.reptiles[0].id;
+        saveDB();
+        renderReptileSelector();
+        renderCurrentPage();
+        showToast('✅ Backup importato!');
+      });
+    } catch(err) { showToast('⚠️ Errore nel file JSON'); }
+    e.target.value = '';
+  };
+  reader.readAsText(file);
 }
 
 // ═══════════════════════════════════════════════════════

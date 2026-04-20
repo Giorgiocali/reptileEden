@@ -1,44 +1,35 @@
 {
-  "name": "Snake Tracker 🐍",
-  "short_name": "Snake",
-  "description": "Registro completo per il tuo serpente: pasti, manutenzione, salute e notifiche",
+  "name": "ReptilEden",
+  "short_name": "ReptilEden",
+  "description": "Registro completo per i tuoi rettili: pasti, manutenzione, salute e notifiche",
   "start_url": "/snake-tracker/index.html",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0a1a0c",
-  "theme_color": "#0d1f0f",
+  "background_color": "#0c0c0e",
+  "theme_color": "#0c0c0e",
   "scope": "/snake-tracker/",
   "lang": "it",
   "categories": ["lifestyle", "health", "utilities"],
   "icons": [
     {
-      "src": "https://emojicdn.elk.sh/🐍?style=apple&size=192",
+      "src": "icon.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "https://emojicdn.elk.sh/🐍?style=apple&size=512",
+      "src": "icon.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     }
   ],
-  "screenshots": [],
   "shortcuts": [
     {
       "name": "Aggiungi Pasto",
       "short_name": "Pasto",
-      "description": "Registra un nuovo pasto",
       "url": "/snake-tracker/index.html#feed",
-      "icons": [{ "src": "https://emojicdn.elk.sh/🐭?style=apple", "sizes": "96x96" }]
-    },
-    {
-      "name": "Salute",
-      "short_name": "Salute",
-      "description": "Registra peso o muta",
-      "url": "/snake-tracker/index.html#health",
-      "icons": [{ "src": "https://emojicdn.elk.sh/💚?style=apple", "sizes": "96x96" }]
+      "icons": [{ "src": "icon.png", "sizes": "96x96" }]
     }
   ]
 }
