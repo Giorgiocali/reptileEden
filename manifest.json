@@ -2,11 +2,12 @@
   "name": "Snake Tracker 🐍",
   "short_name": "Snake",
   "description": "Registro completo per il tuo serpente: pasti, manutenzione, salute e notifiche",
-  "start_url": "/index.html",
+  "start_url": "/snake-tracker/index.html",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0a1a0c",
   "theme_color": "#0d1f0f",
+  "scope": "/snake-tracker/",
   "lang": "it",
   "categories": ["lifestyle", "health", "utilities"],
   "icons": [
@@ -29,14 +30,14 @@
       "name": "Aggiungi Pasto",
       "short_name": "Pasto",
       "description": "Registra un nuovo pasto",
-      "url": "/index.html#feed",
+      "url": "/snake-tracker/index.html#feed",
       "icons": [{ "src": "https://emojicdn.elk.sh/🐭?style=apple", "sizes": "96x96" }]
     },
     {
       "name": "Salute",
       "short_name": "Salute",
       "description": "Registra peso o muta",
-      "url": "/index.html#health",
+      "url": "/snake-tracker/index.html#health",
       "icons": [{ "src": "https://emojicdn.elk.sh/💚?style=apple", "sizes": "96x96" }]
     }
   ]

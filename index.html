@@ -3,1261 +3,460 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0d1f0f">
+<meta name="theme-color" content="#0c0c0e">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Snake Tracker">
 <link rel="manifest" href="manifest.json">
-<title>Snake Tracker 🐍</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inconsolata:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Snake Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a1a0c;
-    --surface: #0f2412;
-    --surface2: #152d18;
-    --surface3: #1a3a1e;
-    --accent: #4ade80;
-    --accent2: #22c55e;
-    --accent3: #86efac;
-    --warn: #fbbf24;
-    --danger: #f87171;
-    --text: #e4f5e7;
-    --text-dim: #6b9e74;
-    --border: rgba(74,222,128,0.15);
-    --radius: 16px;
-    --radius-sm: 10px;
-  }
+:root {
+  --bg: #0c0c0e;
+  --bg2: #111114;
+  --card: #16161a;
+  --card2: #1c1c22;
+  --card3: #222228;
+  --gold: #c9a84c;
+  --gold2: #e8c96a;
+  --gold3: #f0dfa0;
+  --cream: #f2ede4;
+  --muted: #6b6b7a;
+  --muted2: #44444f;
+  --danger: #e05555;
+  --warn: #d4892a;
+  --ok: #3fa06e;
+  --text: #ede9e0;
+  --border: rgba(201,168,76,0.12);
+  --border2: rgba(255,255,255,0.06);
+  --r: 20px;
+  --r2: 14px;
+  --r3: 10px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; font-weight:400; min-height:100dvh; overflow-x:hidden; }
+.app { max-width:430px; margin:0 auto; min-height:100dvh; display:flex; flex-direction:column; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+.header {
+  padding:54px 22px 18px;
+  background:linear-gradient(180deg,#0c0c0e 0%,rgba(12,12,14,0.95) 100%);
+  backdrop-filter:blur(20px);
+  position:sticky; top:0; z-index:100;
+  display:flex; align-items:flex-end; justify-content:space-between;
+  border-bottom:1px solid var(--border2);
+}
+.header-wordmark { font-family:'DM Serif Display',serif; font-size:26px; color:var(--cream); letter-spacing:-0.3px; line-height:1; }
+.header-wordmark span { color:var(--gold2); font-style:italic; }
+.header-sub { font-size:11px; color:var(--muted); letter-spacing:1.5px; text-transform:uppercase; margin-top:3px; }
+.notif-btn { width:38px; height:38px; border:1px solid var(--border); background:var(--card2); border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:16px; transition:all 0.2s; }
+.notif-btn:active { transform:scale(0.88); }
+.notif-btn.active { border-color:var(--gold); background:rgba(201,168,76,0.1); }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inconsolata', monospace;
-    min-height: 100dvh;
-    overflow-x: hidden;
-    position: relative;
-  }
+.nav-bar {
+  position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+  width:calc(100% - 32px); max-width:398px;
+  background:rgba(22,22,26,0.92); backdrop-filter:blur(24px);
+  border:1px solid var(--border2); border-radius:28px;
+  display:flex; padding:6px; gap:4px; z-index:200;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+}
+.nav-btn { flex:1; padding:9px 4px 7px; background:none; border:none; color:var(--muted); font-family:'DM Sans',sans-serif; font-size:10px; font-weight:500; letter-spacing:0.3px; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:3px; border-radius:22px; transition:all 0.2s; text-transform:uppercase; }
+.nav-btn .ico { font-size:18px; line-height:1; }
+.nav-btn.active { background:var(--card3); color:var(--gold2); }
+.nav-btn:active { opacity:0.6; }
 
-  body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background:
-      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(34,197,94,0.08) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 60% at 10% 90%, rgba(74,222,128,0.06) 0%, transparent 50%);
-    pointer-events: none;
-    z-index: 0;
-  }
+.content { flex:1; padding:16px 16px 96px; overflow-y:auto; }
+.page { display:none; animation:fadeUp 0.28s cubic-bezier(.4,0,.2,1); }
+.page.active { display:block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-  .app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; min-height: 100dvh; display: flex; flex-direction: column; }
+.card { background:var(--card); border:1px solid var(--border2); border-radius:var(--r); padding:18px; margin-bottom:12px; position:relative; overflow:hidden; }
+.card-label { font-size:10px; font-weight:500; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:14px; display:flex; align-items:center; gap:6px; }
+.card-label::before { content:''; width:12px; height:1px; background:var(--gold); opacity:0.6; display:inline-block; }
+.section-head { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; }
 
-  /* HEADER */
-  .header {
-    padding: 20px 20px 16px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--border);
-    background: rgba(10,26,12,0.8);
-    backdrop-filter: blur(20px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+.hero-card { background:var(--card); border:1px solid var(--border); border-radius:var(--r); padding:22px; margin-bottom:12px; position:relative; overflow:hidden; }
+.hero-card::after { content:''; position:absolute; top:-40px; right:-40px; width:140px; height:140px; border-radius:50%; background:radial-gradient(circle,rgba(201,168,76,0.09) 0%,transparent 70%); pointer-events:none; }
+.hero-snake-emoji { font-size:52px; line-height:1; margin-bottom:10px; display:block; }
+.hero-name { font-family:'DM Serif Display',serif; font-size:28px; color:var(--cream); line-height:1.1; }
+.hero-species { font-size:12px; color:var(--muted); margin-top:4px; letter-spacing:0.5px; }
+.hero-divider { height:1px; background:var(--border2); margin:16px 0; }
+.hero-stats { display:flex; }
+.hero-stat { flex:1; text-align:center; }
+.hero-stat + .hero-stat { border-left:1px solid var(--border2); }
+.hero-stat-val { font-family:'DM Serif Display',serif; font-size:24px; color:var(--gold2); }
+.hero-stat-val.danger { color:var(--danger); }
+.hero-stat-val.warn { color:var(--warn); }
+.hero-stat-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:2px; }
 
-  .header-left { display: flex; flex-direction: column; gap: 2px; }
-  .header-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--accent);
-    letter-spacing: -0.5px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .header-sub { font-size: 11px; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+.alerts { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+.alert-chip { display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:var(--r2); font-size:13px; line-height:1.4; }
+.alert-chip .dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+.alert-chip.ok { background:rgba(63,160,110,0.1); border:1px solid rgba(63,160,110,0.2); color:#7ed4a8; }
+.alert-chip.ok .dot { background:var(--ok); }
+.alert-chip.warn { background:rgba(212,137,42,0.1); border:1px solid rgba(212,137,42,0.25); color:#e4a85a; }
+.alert-chip.warn .dot { background:var(--warn); }
+.alert-chip.danger { background:rgba(224,85,85,0.1); border:1px solid rgba(224,85,85,0.25); color:#eb8080; }
+.alert-chip.danger .dot { background:var(--danger); }
 
-  .notif-btn {
-    width: 40px; height: 40px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 18px;
-  }
-  .notif-btn:active { transform: scale(0.9); background: var(--surface2); }
-  .notif-btn.active { border-color: var(--accent); background: rgba(74,222,128,0.1); }
+.stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px; }
+.stat-card { background:var(--card); border:1px solid var(--border2); border-radius:var(--r2); padding:16px 14px; }
+.stat-card-lbl { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:8px; }
+.stat-card-val { font-family:'DM Serif Display',serif; font-size:28px; color:var(--gold2); line-height:1; }
+.stat-card-val.danger { color:var(--danger); }
+.stat-card-val.warn { color:var(--warn); }
+.stat-card-unit { font-size:11px; color:var(--muted); margin-top:4px; }
 
-  /* NAV */
-  .nav {
-    display: flex;
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    overflow-x: auto;
-    scrollbar-width: none;
-    gap: 0;
-  }
-  .nav::-webkit-scrollbar { display: none; }
+.mini-chart { display:flex; flex-direction:column; gap:10px; }
+.mini-bar-row { display:flex; align-items:center; gap:10px; }
+.mini-bar-date { font-size:11px; color:var(--muted); min-width:52px; }
+.mini-bar-track { flex:1; height:6px; background:var(--card3); border-radius:3px; overflow:hidden; }
+.mini-bar-fill { height:100%; border-radius:3px; background:var(--gold); transition:width 0.6s ease; }
+.mini-bar-fill.refused { background:var(--danger); }
+.mini-bar-icon { font-size:14px; }
 
-  .nav-btn {
-    flex: 1;
-    min-width: 70px;
-    padding: 12px 8px;
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    transition: all 0.2s;
-    border-bottom: 2px solid transparent;
-    text-transform: uppercase;
-  }
-  .nav-btn .icon { font-size: 20px; }
-  .nav-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-  .nav-btn:active { opacity: 0.7; }
+.temp-row { display:flex; align-items:center; justify-content:center; gap:24px; padding:16px 0 4px; }
+.temp-zone { text-align:center; }
+.temp-val { font-family:'DM Serif Display',serif; font-size:40px; line-height:1; }
+.temp-val.hot { color:#d48a2a; }
+.temp-val.cool { color:#5b9bd4; }
+.temp-lbl { font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-top:4px; }
+.temp-sep { font-family:'DM Serif Display',serif; font-size:28px; color:var(--muted2); }
 
-  /* CONTENT */
-  .content { flex: 1; padding: 16px; overflow-y: auto; }
-  .page { display: none; animation: fadeIn 0.3s ease; }
-  .page.active { display: block; }
+.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; border-radius:var(--r2); }
+table { width:100%; border-collapse:collapse; font-size:12.5px; min-width:320px; }
+th { text-align:left; padding:10px 12px; color:var(--muted); font-size:10px; letter-spacing:1.5px; text-transform:uppercase; font-weight:500; border-bottom:1px solid var(--border2); background:var(--card2); }
+td { padding:11px 12px; border-bottom:1px solid var(--border2); color:var(--text); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+.badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:500; }
+.badge-ok { background:rgba(63,160,110,0.15); color:#7ed4a8; }
+.badge-warn { background:rgba(212,137,42,0.15); color:#e4a85a; }
+.badge-danger { background:rgba(224,85,85,0.15); color:#eb8080; }
+.badge-muted { background:rgba(107,107,122,0.2); color:var(--muted); }
+.badge-gold { background:rgba(201,168,76,0.15); color:var(--gold2); }
 
-  /* CARDS */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    position: relative;
-    overflow: hidden;
-  }
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(90deg, var(--accent2), transparent);
-  }
-  .card.warn::before { background: linear-gradient(90deg, var(--warn), transparent); }
-  .card.danger::before { background: linear-gradient(90deg, var(--danger), transparent); }
+.form-group { margin-bottom:14px; }
+.form-label { display:block; font-size:11px; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:8px; }
+.form-input,.form-select { width:100%; background:var(--card2); border:1px solid var(--border2); border-radius:var(--r3); padding:13px 14px; color:var(--text); font-family:'DM Sans',sans-serif; font-size:15px; outline:none; transition:border-color 0.2s; appearance:none; -webkit-appearance:none; }
+.form-input:focus,.form-select:focus { border-color:var(--gold); }
+.form-input::placeholder { color:var(--muted2); }
+.btn { width:100%; padding:14px; border-radius:var(--r3); border:none; font-family:'DM Sans',sans-serif; font-weight:600; font-size:14px; letter-spacing:0.3px; cursor:pointer; transition:all 0.18s; }
+.btn-primary { background:var(--gold); color:#0c0c0e; }
+.btn-primary:active { transform:scale(0.97); background:var(--gold2); }
+.btn-outline { background:var(--card2); border:1px solid var(--border2); color:var(--muted); }
+.btn-outline:active { background:var(--card3); }
+.btn-sm { padding:8px 16px; font-size:12px; width:auto; border-radius:30px; }
 
-  .card-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 12px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 12px;
-    display: flex; align-items: center; gap: 6px;
-  }
+.toggle-row { display:flex; align-items:center; justify-content:space-between; padding:14px 0; border-bottom:1px solid var(--border2); }
+.toggle-row:last-child { border-bottom:none; }
+.toggle-info { display:flex; flex-direction:column; gap:2px; }
+.toggle-name { font-size:14px; font-weight:500; color:var(--text); }
+.toggle-desc { font-size:12px; color:var(--muted); }
+.toggle { width:46px; height:26px; background:var(--card3); border-radius:13px; position:relative; cursor:pointer; transition:background 0.3s; border:1px solid var(--border2); flex-shrink:0; }
+.toggle.on { background:var(--gold); border-color:var(--gold); }
+.toggle::after { content:''; position:absolute; top:2px; left:2px; width:20px; height:20px; background:rgba(255,255,255,0.9); border-radius:50%; transition:left 0.25s cubic-bezier(.4,0,.2,1); }
+.toggle.on::after { left:22px; }
 
-  /* HOME PAGE */
-  .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-  .status-item {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 14px 12px;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .status-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
-  .status-value { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--accent); }
-  .status-value.warn { color: var(--warn); }
-  .status-value.danger { color: var(--danger); }
-  .status-unit { font-size: 11px; color: var(--text-dim); }
+.modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(6px); z-index:300; display:none; align-items:flex-end; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal { background:var(--card); border:1px solid var(--border2); border-radius:var(--r) var(--r) 0 0; padding:28px 20px 40px; width:100%; max-width:430px; position:relative; animation:slideUp 0.3s cubic-bezier(.4,0,.2,1); }
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.modal-title { font-family:'DM Serif Display',serif; font-size:22px; color:var(--cream); margin-bottom:18px; }
+.modal-handle { width:36px; height:4px; background:var(--card3); border-radius:2px; margin:0 auto 20px; }
+.modal-close { position:absolute; top:20px; right:20px; background:var(--card2); border:1px solid var(--border2); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:13px; color:var(--muted); }
 
-  .alert-box {
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 8px;
-    font-size: 13px;
-    line-height: 1.4;
-  }
-  .alert-box.warn { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.3); color: #fde68a; }
-  .alert-box.danger { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); color: #fca5a5; }
-  .alert-box.ok { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.2); color: var(--accent3); }
+.toast { position:fixed; bottom:88px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--card2); border:1px solid var(--border); color:var(--gold3); padding:10px 20px; border-radius:30px; font-size:13px; font-weight:500; z-index:400; opacity:0; pointer-events:none; transition:opacity 0.25s,transform 0.25s; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-  /* SECTION TITLE */
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    color: var(--text);
-    margin-bottom: 14px;
-    display: flex; align-items: center; justify-content: space-between;
-  }
-
-  /* TABLE */
-  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 340px; }
-  th {
-    text-align: left; padding: 8px 10px;
-    color: var(--text-dim); font-family: 'Syne', sans-serif;
-    font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
-    border-bottom: 1px solid var(--border);
-    background: var(--surface2);
-  }
-  td { padding: 10px 10px; border-bottom: 1px solid rgba(74,222,128,0.05); vertical-align: middle; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: rgba(74,222,128,0.03); }
-
-  .badge {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-  }
-  .badge-ok { background: rgba(74,222,128,0.15); color: var(--accent); }
-  .badge-warn { background: rgba(251,191,36,0.15); color: var(--warn); }
-  .badge-danger { background: rgba(248,113,113,0.15); color: var(--danger); }
-  .badge-muted { background: rgba(107,158,116,0.15); color: var(--text-dim); }
-
-  /* FORM */
-  .form-group { margin-bottom: 14px; }
-  .form-label { display: block; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; font-family: 'Syne', sans-serif; }
-  .form-input, .form-select {
-    width: 100%;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 11px 14px;
-    color: var(--text);
-    font-family: 'Inconsolata', monospace;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-    appearance: none;
-    -webkit-appearance: none;
-  }
-  .form-input:focus, .form-select:focus { border-color: var(--accent2); }
-  .form-input::placeholder { color: var(--text-dim); }
-
-  .btn {
-    width: 100%;
-    padding: 13px;
-    border-radius: var(--radius-sm);
-    border: none;
-    font-family: 'Syne', sans-serif;
-    font-weight: 700;
-    font-size: 13px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .btn-primary { background: var(--accent2); color: #0a1a0c; }
-  .btn-primary:active { transform: scale(0.98); background: var(--accent); }
-  .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
-  .btn-outline:active { background: var(--surface2); }
-
-  .btn-sm {
-    padding: 7px 14px;
-    font-size: 11px;
-    width: auto;
-    border-radius: 8px;
-  }
-
-  /* TEMPERATURA DISPLAY */
-  .temp-display {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
-    padding: 20px 0;
-  }
-  .temp-zone {
-    text-align: center;
-  }
-  .temp-val {
-    font-family: 'Syne', sans-serif;
-    font-size: 36px;
-    font-weight: 800;
-    line-height: 1;
-  }
-  .temp-label { font-size: 11px; color: var(--text-dim); margin-top: 4px; letter-spacing: 1px; }
-  .temp-sep { font-size: 24px; color: var(--border); }
-
-  /* NOTIF MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px);
-    z-index: 200;
-    display: none;
-    align-items: flex-end;
-    justify-content: center;
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius) var(--radius) 0 0;
-    padding: 24px 20px 32px;
-    width: 100%;
-    max-width: 480px;
-    animation: slideUp 0.3s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .modal-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; margin-bottom: 16px; }
-  .modal-close {
-    position: absolute;
-    top: 16px; right: 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    width: 32px; height: 32px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    font-size: 14px;
-    color: var(--text-dim);
-  }
-
-  /* CHART BAR */
-  .bar-chart { display: flex; flex-direction: column; gap: 8px; }
-  .bar-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-  .bar-label { min-width: 80px; color: var(--text-dim); font-size: 11px; }
-  .bar-track { flex: 1; height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
-  .bar-fill { height: 100%; background: var(--accent2); border-radius: 4px; transition: width 0.5s ease; }
-  .bar-fill.warn { background: var(--warn); }
-  .bar-val { min-width: 30px; text-align: right; color: var(--accent3); font-size: 11px; }
-
-  /* SNAKE SCALE PATTERN */
-  .snake-decoration {
-    text-align: center;
-    font-size: 40px;
-    padding: 10px 0;
-    opacity: 0.4;
-    letter-spacing: 4px;
-  }
-
-  /* TOGGLE */
-  .toggle-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .toggle-row:last-child { border-bottom: none; }
-  .toggle-info { display: flex; flex-direction: column; gap: 2px; }
-  .toggle-name { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; }
-  .toggle-desc { font-size: 11px; color: var(--text-dim); }
-
-  .toggle {
-    width: 44px; height: 24px;
-    background: var(--surface3);
-    border-radius: 12px;
-    position: relative;
-    cursor: pointer;
-    transition: background 0.3s;
-    border: 1px solid var(--border);
-    flex-shrink: 0;
-  }
-  .toggle.on { background: var(--accent2); border-color: var(--accent2); }
-  .toggle::after {
-    content: '';
-    position: absolute;
-    top: 2px; left: 2px;
-    width: 18px; height: 18px;
-    background: white;
-    border-radius: 50%;
-    transition: left 0.3s;
-  }
-  .toggle.on::after { left: 22px; }
-
-  /* TOAST */
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--surface2);
-    border: 1px solid var(--accent2);
-    color: var(--accent3);
-    padding: 10px 20px;
-    border-radius: 30px;
-    font-size: 13px;
-    font-family: 'Syne', sans-serif;
-    font-weight: 600;
-    z-index: 300;
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-  }
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-dim);
-  }
-  .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
-  .empty-state p { font-size: 13px; }
-
-  .settings-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .settings-row:last-child { border-bottom: none; }
-  .settings-key { font-size: 12px; letter-spacing: 1px; color: var(--text-dim); text-transform: uppercase; font-family: 'Syne', sans-serif; }
-  .settings-val { font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 8px; }
-  input[type="number"].form-input { -moz-appearance: textfield; }
-  input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.delta-pos { color:var(--ok); }
+.delta-neg { color:var(--danger); }
+.empty-msg { text-align:center; padding:36px 0; color:var(--muted); font-size:13px; }
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:none; }
+input[type="number"].form-input { -moz-appearance:textfield; }
 </style>
 </head>
 <body>
 <div class="app">
 
   <div class="header">
-    <div class="header-left">
-      <div class="header-title">🐍 Snake Tracker</div>
+    <div>
+      <div class="header-wordmark">Snake<span>.</span></div>
       <div class="header-sub">Registro terrario</div>
     </div>
-    <button class="notif-btn" id="notifBtn" onclick="openNotifModal()" title="Impostazioni notifiche">🔔</button>
-  </div>
-
-  <div class="nav">
-    <button class="nav-btn active" data-page="home" onclick="switchPage('home', this)">
-      <span class="icon">🏠</span>Home
-    </button>
-    <button class="nav-btn" data-page="feed" onclick="switchPage('feed', this)">
-      <span class="icon">🐭</span>Pasto
-    </button>
-    <button class="nav-btn" data-page="maint" onclick="switchPage('maint', this)">
-      <span class="icon">🧹</span>Igiene
-    </button>
-    <button class="nav-btn" data-page="health" onclick="switchPage('health', this)">
-      <span class="icon">💚</span>Salute
-    </button>
-    <button class="nav-btn" data-page="settings" onclick="switchPage('settings', this)">
-      <span class="icon">⚙️</span>Config
-    </button>
+    <button class="notif-btn" id="notifBtn" onclick="openNotifModal()">🔔</button>
   </div>
 
   <div class="content">
 
     <!-- HOME -->
     <div id="page-home" class="page active">
-      <div id="alerts-container"></div>
-
-      <div class="card">
-        <div class="card-title">🌡️ Temperatura Terrario</div>
-        <div class="temp-display">
-          <div class="temp-zone">
-            <div class="temp-val" style="color: var(--warn)">29°</div>
-            <div class="temp-label">LATO CALDO</div>
+      <div class="hero-card">
+        <span class="hero-snake-emoji">🐍</span>
+        <div class="hero-name" id="hero-name">Il tuo serpente</div>
+        <div class="hero-species" id="hero-species">Configura nome e specie nelle impostazioni</div>
+        <div class="hero-divider"></div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-val" id="hs-peso">—</div>
+            <div class="hero-stat-lbl">grammi</div>
           </div>
-          <div class="temp-sep">/</div>
-          <div class="temp-zone">
-            <div class="temp-val" style="color: var(--accent)">27°</div>
-            <div class="temp-label">LATO FRESCO</div>
+          <div class="hero-stat">
+            <div class="hero-stat-val" id="hs-nextfeed">—</div>
+            <div class="hero-stat-lbl">giorni al pasto</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-val" id="hs-pasti">—</div>
+            <div class="hero-stat-lbl">pasti totali</div>
           </div>
         </div>
       </div>
-
-      <div class="status-grid" id="status-grid"></div>
-
+      <div class="alerts" id="alerts-container"></div>
       <div class="card">
-        <div class="card-title">📊 Storico Pasti</div>
-        <div class="bar-chart" id="home-bar-chart"></div>
+        <div class="card-label">Temperatura terrario</div>
+        <div class="temp-row">
+          <div class="temp-zone"><div class="temp-val hot">29°</div><div class="temp-lbl">Caldo</div></div>
+          <div class="temp-sep">/</div>
+          <div class="temp-zone"><div class="temp-val cool">27°</div><div class="temp-lbl">Fresco</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Ultimi pasti</div>
+        <div class="mini-chart" id="home-chart"></div>
       </div>
     </div>
 
     <!-- ALIMENTAZIONE -->
     <div id="page-feed" class="page">
-      <div class="section-title">
-        Pasti <button class="btn btn-outline btn-sm" onclick="openAddFeed()">+ Aggiungi</button>
-      </div>
-
+      <div class="section-head">Pasti <button class="btn btn-outline btn-sm" onclick="openAddFeed()">+ Aggiungi</button></div>
       <div id="feed-add-form" style="display:none">
         <div class="card">
-          <div class="card-title">🆕 Nuovo Pasto</div>
-          <div class="form-group">
-            <label class="form-label">Data</label>
-            <input type="date" class="form-input" id="feed-date">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Peso preda (g)</label>
-            <input type="number" class="form-input" id="feed-weight" placeholder="es. 15">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Esito</label>
-            <select class="form-select" id="feed-esito">
-              <option value="Mangiato">✅ Mangiato</option>
-              <option value="Rifiutato">❌ Rifiutato</option>
-              <option value="Parziale">⚠️ Parziale</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Defecazione</label>
-            <select class="form-select" id="feed-defecazione">
-              <option value="false">No</option>
-              <option value="true">Sì</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Note</label>
-            <input type="text" class="form-input" id="feed-note" placeholder="es. Stava facendo la muta">
-          </div>
-          <button class="btn btn-primary" onclick="saveFeed()">Salva</button>
+          <div class="card-label">Nuovo pasto</div>
+          <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="feed-date"></div>
+          <div class="form-group"><label class="form-label">Peso preda (g)</label><input type="number" class="form-input" id="feed-weight" placeholder="es. 15"></div>
+          <div class="form-group"><label class="form-label">Esito</label><select class="form-select" id="feed-esito"><option value="Mangiato">✅ Mangiato</option><option value="Rifiutato">❌ Rifiutato</option><option value="Parziale">⚠️ Parziale</option></select></div>
+          <div class="form-group"><label class="form-label">Defecazione</label><select class="form-select" id="feed-defecazione"><option value="false">No</option><option value="true">Sì</option></select></div>
+          <div class="form-group"><label class="form-label">Note</label><input type="text" class="form-input" id="feed-note" placeholder="es. Stava facendo la muta"></div>
+          <button class="btn btn-primary" onclick="saveFeed()">Salva pasto</button>
           <div style="height:8px"></div>
           <button class="btn btn-outline" onclick="closeFeedForm()">Annulla</button>
         </div>
       </div>
-
       <div class="card">
         <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Peso (g)</th>
-                <th>%</th>
-                <th>Esito</th>
-                <th>Note</th>
-              </tr>
-            </thead>
-            <tbody id="feed-tbody"></tbody>
-          </table>
+          <table><thead><tr><th>Data</th><th>Peso</th><th>%</th><th>Esito</th><th>Note</th></tr></thead><tbody id="feed-tbody"></tbody></table>
         </div>
       </div>
     </div>
 
     <!-- MANUTENZIONE -->
     <div id="page-maint" class="page">
-      <div class="section-title">
-        Igiene <button class="btn btn-outline btn-sm" onclick="openAddMaint()">+ Aggiungi</button>
-      </div>
-
+      <div class="section-head">Igiene <button class="btn btn-outline btn-sm" onclick="openAddMaint()">+ Aggiungi</button></div>
       <div id="maint-add-form" style="display:none">
         <div class="card">
-          <div class="card-title">🆕 Nuova Manutenzione</div>
-          <div class="form-group">
-            <label class="form-label">Data</label>
-            <input type="date" class="form-input" id="maint-date">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Rimozione Escrementi</label>
-            <select class="form-select" id="maint-esc">
-              <option value="true">✅ Sì</option>
-              <option value="false">No</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Pulizia Profonda</label>
-            <select class="form-select" id="maint-deep">
-              <option value="false">No</option>
-              <option value="true">✅ Sì</option>
-            </select>
-          </div>
+          <div class="card-label">Nuova manutenzione</div>
+          <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="maint-date"></div>
+          <div class="form-group"><label class="form-label">Rimozione escrementi</label><select class="form-select" id="maint-esc"><option value="true">✅ Sì</option><option value="false">No</option></select></div>
+          <div class="form-group"><label class="form-label">Pulizia profonda</label><select class="form-select" id="maint-deep"><option value="false">No</option><option value="true">✅ Sì</option></select></div>
           <button class="btn btn-primary" onclick="saveMaint()">Salva</button>
           <div style="height:8px"></div>
           <button class="btn btn-outline" onclick="closeMaintForm()">Annulla</button>
         </div>
       </div>
-
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-card-lbl">Ultima rimozione</div><div style="font-size:14px;color:var(--text);font-weight:500;margin-top:6px" id="last-esc-date">—</div><div class="stat-card-unit" id="last-esc-days"></div></div>
+        <div class="stat-card"><div class="stat-card-lbl">Ultima pulizia</div><div style="font-size:14px;color:var(--text);font-weight:500;margin-top:6px" id="last-deep-date">—</div><div class="stat-card-unit" id="last-deep-days"></div></div>
+      </div>
       <div class="card">
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Escrementi</th>
-                <th>Pulizia profonda</th>
-              </tr>
-            </thead>
-            <tbody id="maint-tbody"></tbody>
-          </table>
-        </div>
+        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Escrementi</th><th>Pulizia profonda</th></tr></thead><tbody id="maint-tbody"></tbody></table></div>
       </div>
     </div>
 
     <!-- SALUTE -->
     <div id="page-health" class="page">
-      <div class="section-title">
-        Salute <button class="btn btn-outline btn-sm" onclick="openAddHealth()">+ Aggiungi</button>
-      </div>
-
+      <div class="section-head">Salute <button class="btn btn-outline btn-sm" onclick="openAddHealth()">+ Aggiungi</button></div>
       <div id="health-add-form" style="display:none">
         <div class="card">
-          <div class="card-title">🆕 Nuovo Rilevamento</div>
-          <div class="form-group">
-            <label class="form-label">Tipo</label>
-            <select class="form-select" id="health-type">
-              <option value="peso">⚖️ Peso</option>
-              <option value="muta">🐍 Muta</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Data</label>
-            <input type="date" class="form-input" id="health-date">
-          </div>
-          <div id="health-peso-group" class="form-group">
-            <label class="form-label">Peso (g)</label>
-            <input type="number" class="form-input" id="health-peso" placeholder="es. 12">
-          </div>
-          <div id="health-muta-group" class="form-group" style="display:none">
-            <label class="form-label">Muta Completa</label>
-            <select class="form-select" id="health-muta">
-              <option value="Sì">Sì</option>
-              <option value="No">No</option>
-            </select>
-          </div>
+          <div class="card-label">Nuovo rilevamento</div>
+          <div class="form-group"><label class="form-label">Tipo</label><select class="form-select" id="health-type" onchange="toggleHealthForm()"><option value="peso">⚖️ Peso</option><option value="muta">🐍 Muta</option></select></div>
+          <div class="form-group"><label class="form-label">Data</label><input type="date" class="form-input" id="health-date"></div>
+          <div id="health-peso-group" class="form-group"><label class="form-label">Peso (g)</label><input type="number" class="form-input" id="health-peso" placeholder="es. 12"></div>
+          <div id="health-muta-group" class="form-group" style="display:none"><label class="form-label">Muta completa</label><select class="form-select" id="health-muta"><option value="Sì">Sì</option><option value="No">No</option></select></div>
           <button class="btn btn-primary" onclick="saveHealth()">Salva</button>
           <div style="height:8px"></div>
           <button class="btn btn-outline" onclick="closeHealthForm()">Annulla</button>
         </div>
       </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
-        <div class="card" style="margin-bottom:0">
-          <div class="card-title">⚖️ Peso</div>
-          <div style="font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--accent)" id="current-weight">—</div>
-          <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px">grammi</div>
-        </div>
-        <div class="card" style="margin-bottom:0">
-          <div class="card-title">🐍 Ultima Muta</div>
-          <div style="font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--accent3)" id="last-muta">—</div>
-        </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-card-lbl">Peso attuale</div><div class="stat-card-val" id="current-weight">—</div><div class="stat-card-unit">grammi</div></div>
+        <div class="stat-card"><div class="stat-card-lbl">Ultima muta</div><div style="font-size:15px;color:var(--gold2);font-weight:500;margin-top:8px" id="last-muta">—</div><div class="stat-card-unit" id="last-muta-days"></div></div>
       </div>
-
       <div class="card">
-        <div class="card-title">⚖️ Storico Pesi</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Data</th><th>Peso (g)</th><th>Δ</th></tr></thead>
-            <tbody id="peso-tbody"></tbody>
-          </table>
-        </div>
+        <div class="card-label">Storico pesi</div>
+        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Peso</th><th>Variazione</th></tr></thead><tbody id="peso-tbody"></tbody></table></div>
       </div>
-
       <div class="card">
-        <div class="card-title">🐍 Storico Mute</div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>Data</th><th>Completa</th></tr></thead>
-            <tbody id="muta-tbody"></tbody>
-          </table>
-        </div>
+        <div class="card-label">Storico mute</div>
+        <div class="table-wrap"><table><thead><tr><th>Data</th><th>Completa</th></tr></thead><tbody id="muta-tbody"></tbody></table></div>
       </div>
     </div>
 
-    <!-- SETTINGS / CONFIG -->
+    <!-- SETTINGS -->
     <div id="page-settings" class="page">
-      <div class="section-title">Configurazione</div>
-
+      <div class="section-head">Impostazioni</div>
       <div class="card">
-        <div class="card-title">🐍 Info Serpente</div>
-        <div class="form-group">
-          <label class="form-label">Nome</label>
-          <input type="text" class="form-input" id="snake-name" placeholder="es. Noodles">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Specie</label>
-          <input type="text" class="form-input" id="snake-species" placeholder="es. Ball Python">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Peso attuale (g)</label>
-          <input type="number" class="form-input" id="snake-weight" placeholder="es. 12">
-        </div>
-        <button class="btn btn-primary" onclick="saveSettings()">Salva impostazioni</button>
+        <div class="card-label">Il tuo serpente</div>
+        <div class="form-group"><label class="form-label">Nome</label><input type="text" class="form-input" id="snake-name" placeholder="es. Noodles"></div>
+        <div class="form-group"><label class="form-label">Specie</label><input type="text" class="form-input" id="snake-species" placeholder="es. Ball Python"></div>
+        <div class="form-group"><label class="form-label">Peso base (g)</label><input type="number" class="form-input" id="snake-weight" placeholder="es. 12"></div>
+        <button class="btn btn-primary" onclick="saveSettings()">Salva info</button>
       </div>
-
       <div class="card">
-        <div class="card-title">⏰ Intervalli Notifiche</div>
-        <div class="form-group">
-          <label class="form-label">Giorni tra un pasto</label>
-          <input type="number" class="form-input" id="interval-feed" value="7" min="1" max="30">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Giorni tra pulizia escrementi</label>
-          <input type="number" class="form-input" id="interval-esc" value="7" min="1" max="30">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Giorni tra pulizia profonda</label>
-          <input type="number" class="form-input" id="interval-deep" value="30" min="7" max="90">
-        </div>
+        <div class="card-label">Intervalli notifiche (giorni)</div>
+        <div class="form-group"><label class="form-label">Tra un pasto e l'altro</label><input type="number" class="form-input" id="interval-feed" value="7" min="1" max="30"></div>
+        <div class="form-group"><label class="form-label">Rimozione escrementi</label><input type="number" class="form-input" id="interval-esc" value="7" min="1" max="30"></div>
+        <div class="form-group"><label class="form-label">Pulizia profonda</label><input type="number" class="form-input" id="interval-deep" value="30" min="7" max="90"></div>
         <button class="btn btn-primary" onclick="saveIntervals()">Salva intervalli</button>
       </div>
-
       <div class="card">
-        <div class="card-title">📤 Esporta Dati</div>
-        <button class="btn btn-outline" onclick="exportData()">📁 Esporta come JSON</button>
+        <div class="card-label">Dati</div>
+        <button class="btn btn-outline" onclick="exportData()">📁 Esporta backup JSON</button>
       </div>
     </div>
 
   </div>
+
+  <div class="nav-bar">
+    <button class="nav-btn active" data-page="home" onclick="switchPage('home',this)"><span class="ico">🏠</span>Home</button>
+    <button class="nav-btn" data-page="feed" onclick="switchPage('feed',this)"><span class="ico">🐭</span>Pasti</button>
+    <button class="nav-btn" data-page="maint" onclick="switchPage('maint',this)"><span class="ico">🧹</span>Igiene</button>
+    <button class="nav-btn" data-page="health" onclick="switchPage('health',this)"><span class="ico">💚</span>Salute</button>
+    <button class="nav-btn" data-page="settings" onclick="switchPage('settings',this)"><span class="ico">⚙️</span>Config</button>
+  </div>
+
 </div>
 
 <!-- NOTIF MODAL -->
 <div class="modal-overlay" id="notifModal">
-  <div class="modal" style="position:relative">
+  <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-close" onclick="closeNotifModal()">✕</div>
-    <div class="modal-title">🔔 Notifiche</div>
-
-    <div id="notif-status" style="margin-bottom:16px; font-size:13px; color: var(--text-dim)"></div>
-
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <div class="toggle-name">Pasto imminente</div>
-        <div class="toggle-desc">Notifica quando è ora di dar da mangiare</div>
-      </div>
-      <div class="toggle on" id="toggle-feed" onclick="toggleNotif('feed')"></div>
-    </div>
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <div class="toggle-name">Pulizia escrementi</div>
-        <div class="toggle-desc">Notifica per la rimozione escrementi</div>
-      </div>
-      <div class="toggle on" id="toggle-esc" onclick="toggleNotif('esc')"></div>
-    </div>
-    <div class="toggle-row">
-      <div class="toggle-info">
-        <div class="toggle-name">Pulizia profonda</div>
-        <div class="toggle-desc">Notifica per il cambio completo substrato</div>
-      </div>
-      <div class="toggle on" id="toggle-deep" onclick="toggleNotif('deep')"></div>
-    </div>
-
+    <div class="modal-title">Notifiche</div>
+    <div id="notif-status" style="margin-bottom:18px;font-size:13px;color:var(--muted)"></div>
+    <div class="toggle-row"><div class="toggle-info"><div class="toggle-name">Pasto imminente</div><div class="toggle-desc">Avviso quando è ora di dar da mangiare</div></div><div class="toggle on" id="toggle-feed" onclick="toggleNotif('feed')"></div></div>
+    <div class="toggle-row"><div class="toggle-info"><div class="toggle-name">Rimozione escrementi</div><div class="toggle-desc">Avviso per la pulizia regolare</div></div><div class="toggle on" id="toggle-esc" onclick="toggleNotif('esc')"></div></div>
+    <div class="toggle-row"><div class="toggle-info"><div class="toggle-name">Pulizia profonda</div><div class="toggle-desc">Avviso per il cambio substrato</div></div><div class="toggle on" id="toggle-deep" onclick="toggleNotif('deep')"></div></div>
     <div style="height:20px"></div>
-    <button class="btn btn-primary" onclick="requestNotifPermission()">Abilita Notifiche Push</button>
+    <button class="btn btn-primary" onclick="requestNotifPermission()">Abilita notifiche push</button>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// DATA LAYER
-// ============================================================
+const DB_KEY='snakeTrackerData_v2';
+function getDefaultData(){return{snake:{name:'',species:'',weight:12},intervals:{feed:7,esc:7,deep:30},notifToggles:{feed:true,esc:true,deep:true},feeding:[{date:'2026-04-02',weight:2,esito:'Mangiato',defecazione:true,note:''},{date:'2026-04-07',weight:2,esito:'Rifiutato',defecazione:false,note:'Stava facendo la muta'},{date:'2026-04-13',weight:2,esito:'Mangiato',defecazione:false,note:''},{date:'2026-04-18',weight:2,esito:'Mangiato',defecazione:false,note:''}],maintenance:[{date:'2026-03-27',rimozione:true,profonda:false},{date:'2026-04-03',rimozione:false,profonda:true}],weights:[{date:'2026-04-04',peso:12}],mute:[{date:'2026-04-12',completa:'Sì'}]}}
+function loadData(){try{const r=localStorage.getItem(DB_KEY);if(r)return JSON.parse(r);}catch(e){}return getDefaultData();}
+function saveData(d){localStorage.setItem(DB_KEY,JSON.stringify(d));}
+let appData=loadData();
 
-const DB_KEY = 'snakeTrackerData';
+function switchPage(page,btn){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('page-'+page).classList.add('active');btn.classList.add('active');renderPage(page);}
+function renderPage(p){if(p==='home')renderHome();else if(p==='feed')renderFeed();else if(p==='maint')renderMaint();else if(p==='health')renderHealth();else if(p==='settings')renderSettings();}
+function daysSince(ds){if(!ds)return 9999;return Math.floor((new Date()-new Date(ds))/86400000);}
+function formatDate(ds){if(!ds)return'—';const[y,m,d]=ds.split('-');return`${d}/${m}/${y}`;}
+function todayISO(){return new Date().toISOString().slice(0,10);}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(DB_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch(e) {}
-  return getDefaultData();
+function renderHome(){
+  const d=appData,sn=d.snake;
+  document.getElementById('hero-name').textContent=sn.name||'Il tuo serpente';
+  document.getElementById('hero-species').textContent=sn.species||'Configura nome e specie nelle impostazioni';
+  const lastW=d.weights.length?d.weights[d.weights.length-1].peso:(sn.weight||'—');
+  document.getElementById('hs-peso').textContent=lastW;
+  const lastFD=d.feeding.length?d.feeding[d.feeding.length-1].date:null;
+  const dsf=daysSince(lastFD),nextF=Math.max(0,d.intervals.feed-dsf);
+  const nfEl=document.getElementById('hs-nextfeed');
+  nfEl.textContent=lastFD?nextF:'—';
+  nfEl.className='hero-stat-val'+(nextF===0?' warn':dsf>d.intervals.feed?' danger':'');
+  document.getElementById('hs-pasti').textContent=d.feeding.length;
+  const alerts=[];
+  if(lastFD){const over=dsf-d.intervals.feed;if(over>=0)alerts.push({type:over>2?'danger':'warn',msg:over===0?'Oggi è il giorno del pasto!':`Pasto in ritardo di ${over} giorn${over===1?'o':'i'}`});else if(nextF<=2)alerts.push({type:'warn',msg:`Pasto tra ${nextF} giorn${nextF===1?'o':'i'}`});else alerts.push({type:'ok',msg:`Prossimo pasto tra ${nextF} giorni`});}
+  const lastEsc=d.maintenance.filter(m=>m.rimozione).slice(-1)[0]?.date;
+  if(daysSince(lastEsc)>=d.intervals.esc)alerts.push({type:'warn',msg:'Rimozione escrementi in scadenza'});
+  const lastDeep=d.maintenance.filter(m=>m.profonda).slice(-1)[0]?.date;
+  if(daysSince(lastDeep)>=d.intervals.deep)alerts.push({type:'danger',msg:'Pulizia profonda necessaria'});
+  document.getElementById('alerts-container').innerHTML=alerts.map(a=>`<div class="alert-chip ${a.type}"><div class="dot"></div>${a.msg}</div>`).join('');
+  const chart=document.getElementById('home-chart');
+  const recent=d.feeding.slice(-5);
+  if(!recent.length){chart.innerHTML='<div class="empty-msg">Nessun pasto registrato</div>';return;}
+  const snW=sn.weight||12;
+  chart.innerHTML=recent.map(f=>{const ok=f.esito==='Mangiato';const pct=Math.min(100,Math.round(f.weight/snW*100*4));return`<div class="mini-bar-row"><div class="mini-bar-date">${formatDate(f.date)}</div><div class="mini-bar-track"><div class="mini-bar-fill ${!ok?'refused':''}" style="width:${pct}%"></div></div><div class="mini-bar-icon">${ok?'✅':'❌'}</div></div>`;}).join('');
 }
 
-function getDefaultData() {
-  return {
-    snake: { name: '', species: '', weight: 12 },
-    intervals: { feed: 7, esc: 7, deep: 30 },
-    notifToggles: { feed: true, esc: true, deep: true },
-    feeding: [
-      { date: '2026-04-02', weight: 2, esito: 'Mangiato', defecazione: true, note: '' },
-      { date: '2026-04-07', weight: 2, esito: 'Rifiutato', defecazione: false, note: 'Stava facendo la muta' },
-      { date: '2026-04-13', weight: 2, esito: 'Mangiato', defecazione: false, note: '' },
-      { date: '2026-04-18', weight: 2, esito: 'Mangiato', defecazione: false, note: '' },
-    ],
-    maintenance: [
-      { date: '2026-03-27', rimozione: true, profonda: false },
-      { date: '2026-04-03', rimozione: false, profonda: true },
-    ],
-    weights: [
-      { date: '2026-04-04', peso: 12 },
-    ],
-    mute: [
-      { date: '2026-04-12', completa: 'Sì' },
-    ]
-  };
+function renderFeed(){
+  const rows=[...appData.feeding].reverse();
+  const snW=appData.snake.weight||12;
+  document.getElementById('feed-tbody').innerHTML=rows.length?rows.map(f=>{const pct=(f.weight/snW*100).toFixed(1);const b=f.esito==='Mangiato'?'badge-ok':f.esito==='Parziale'?'badge-warn':'badge-danger';return`<tr><td>${formatDate(f.date)}</td><td>${f.weight}g</td><td>${pct}%</td><td><span class="badge ${b}">${f.esito}</span></td><td style="color:var(--muted);font-size:11px">${f.note||''}</td></tr>`;}).join(''):'<tr><td colspan="5" class="empty-msg">Nessun pasto</td></tr>';
 }
+function openAddFeed(){document.getElementById('feed-add-form').style.display='block';document.getElementById('feed-date').value=todayISO();document.getElementById('feed-weight').value='';document.getElementById('feed-note').value='';}
+function closeFeedForm(){document.getElementById('feed-add-form').style.display='none';}
+function saveFeed(){const date=document.getElementById('feed-date').value,weight=parseFloat(document.getElementById('feed-weight').value);if(!date||isNaN(weight)){showToast('⚠️ Inserisci data e peso');return;}appData.feeding.push({date,weight,esito:document.getElementById('feed-esito').value,defecazione:document.getElementById('feed-defecazione').value==='true',note:document.getElementById('feed-note').value.trim()});appData.feeding.sort((a,b)=>a.date.localeCompare(b.date));saveData(appData);closeFeedForm();renderFeed();scheduleNotifications();showToast('✅ Pasto salvato!');}
 
-function saveData(data) {
-  localStorage.setItem(DB_KEY, JSON.stringify(data));
+function renderMaint(){
+  const d=appData;
+  const lastEsc=d.maintenance.filter(m=>m.rimozione).slice(-1)[0]?.date;
+  const lastDeep=d.maintenance.filter(m=>m.profonda).slice(-1)[0]?.date;
+  document.getElementById('last-esc-date').textContent=lastEsc?formatDate(lastEsc):'—';
+  document.getElementById('last-esc-days').textContent=lastEsc?`${daysSince(lastEsc)} giorni fa`:'';
+  document.getElementById('last-deep-date').textContent=lastDeep?formatDate(lastDeep):'—';
+  document.getElementById('last-deep-days').textContent=lastDeep?`${daysSince(lastDeep)} giorni fa`:'';
+  const rows=[...d.maintenance].reverse();
+  document.getElementById('maint-tbody').innerHTML=rows.length?rows.map(m=>`<tr><td>${formatDate(m.date)}</td><td><span class="badge ${m.rimozione?'badge-ok':'badge-muted'}">${m.rimozione?'Sì':'No'}</span></td><td><span class="badge ${m.profonda?'badge-ok':'badge-muted'}">${m.profonda?'Sì':'No'}</span></td></tr>`).join(''):'<tr><td colspan="3" class="empty-msg">Nessuna manutenzione</td></tr>';
 }
+function openAddMaint(){document.getElementById('maint-add-form').style.display='block';document.getElementById('maint-date').value=todayISO();}
+function closeMaintForm(){document.getElementById('maint-add-form').style.display='none';}
+function saveMaint(){const date=document.getElementById('maint-date').value;if(!date){showToast('⚠️ Inserisci la data');return;}appData.maintenance.push({date,rimozione:document.getElementById('maint-esc').value==='true',profonda:document.getElementById('maint-deep').value==='true'});appData.maintenance.sort((a,b)=>a.date.localeCompare(b.date));saveData(appData);closeMaintForm();renderMaint();scheduleNotifications();showToast('✅ Salvato!');}
 
-let appData = loadData();
-
-// ============================================================
-// NAVIGATION
-// ============================================================
-
-function switchPage(page, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  btn.classList.add('active');
-  renderPage(page);
+function toggleHealthForm(){const t=document.getElementById('health-type').value;document.getElementById('health-peso-group').style.display=t==='peso'?'':'none';document.getElementById('health-muta-group').style.display=t==='muta'?'':'none';}
+function renderHealth(){
+  const d=appData;
+  const lastW=d.weights.length?d.weights[d.weights.length-1]:null;
+  const lastM=d.mute.length?d.mute[d.mute.length-1]:null;
+  document.getElementById('current-weight').textContent=lastW?lastW.peso:'—';
+  document.getElementById('last-muta').textContent=lastM?formatDate(lastM.date):'—';
+  document.getElementById('last-muta-days').textContent=lastM?`${daysSince(lastM.date)} giorni fa`:'';
+  const pesos=[...d.weights].reverse();
+  document.getElementById('peso-tbody').innerHTML=pesos.length?pesos.map((w,i)=>{const prev=pesos[i+1];const delta=prev?w.peso-prev.peso:null;const dStr=delta!==null?`<span class="${delta>=0?'delta-pos':'delta-neg'}">${delta>=0?'+':''}${delta}g</span>`:'—';return`<tr><td>${formatDate(w.date)}</td><td>${w.peso}g</td><td>${dStr}</td></tr>`;}).join(''):'<tr><td colspan="3" class="empty-msg">Nessun dato</td></tr>';
+  document.getElementById('muta-tbody').innerHTML=d.mute.length?[...d.mute].reverse().map(m=>`<tr><td>${formatDate(m.date)}</td><td><span class="badge badge-gold">${m.completa}</span></td></tr>`).join(''):'<tr><td colspan="2" class="empty-msg">Nessuna muta</td></tr>';
 }
+function openAddHealth(){document.getElementById('health-add-form').style.display='block';document.getElementById('health-date').value=todayISO();document.getElementById('health-peso').value='';}
+function closeHealthForm(){document.getElementById('health-add-form').style.display='none';}
+function saveHealth(){const type=document.getElementById('health-type').value,date=document.getElementById('health-date').value;if(!date){showToast('⚠️ Inserisci la data');return;}if(type==='peso'){const peso=parseFloat(document.getElementById('health-peso').value);if(isNaN(peso)){showToast('⚠️ Inserisci il peso');return;}appData.weights.push({date,peso});appData.weights.sort((a,b)=>a.date.localeCompare(b.date));appData.snake.weight=peso;}else{appData.mute.push({date,completa:document.getElementById('health-muta').value});appData.mute.sort((a,b)=>a.date.localeCompare(b.date));}saveData(appData);closeHealthForm();renderHealth();showToast('✅ Salvato!');}
 
-function renderPage(page) {
-  if (page === 'home') renderHome();
-  else if (page === 'feed') renderFeed();
-  else if (page === 'maint') renderMaint();
-  else if (page === 'health') renderHealth();
-  else if (page === 'settings') renderSettings();
-}
+function renderSettings(){document.getElementById('snake-name').value=appData.snake.name||'';document.getElementById('snake-species').value=appData.snake.species||'';document.getElementById('snake-weight').value=appData.snake.weight||'';document.getElementById('interval-feed').value=appData.intervals.feed;document.getElementById('interval-esc').value=appData.intervals.esc;document.getElementById('interval-deep').value=appData.intervals.deep;}
+function saveSettings(){appData.snake.name=document.getElementById('snake-name').value.trim();appData.snake.species=document.getElementById('snake-species').value.trim();appData.snake.weight=parseFloat(document.getElementById('snake-weight').value)||appData.snake.weight;saveData(appData);showToast('✅ Info salvate!');}
+function saveIntervals(){appData.intervals.feed=parseInt(document.getElementById('interval-feed').value)||7;appData.intervals.esc=parseInt(document.getElementById('interval-esc').value)||7;appData.intervals.deep=parseInt(document.getElementById('interval-deep').value)||30;saveData(appData);scheduleNotifications();showToast('✅ Intervalli salvati!');}
+function exportData(){const b=new Blob([JSON.stringify(appData,null,2)],{type:'application/json'});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download='snake-tracker-backup.json';a.click();URL.revokeObjectURL(u);showToast('📁 Esportazione completata!');}
 
-// ============================================================
-// HOME
-// ============================================================
+function openNotifModal(){document.getElementById('notifModal').classList.add('open');updateNotifStatus();updateNotifToggles();}
+function closeNotifModal(){document.getElementById('notifModal').classList.remove('open');}
+function updateNotifStatus(){const el=document.getElementById('notif-status');if(!('Notification'in window)){el.textContent='❌ Browser non supportato';return;}const p=Notification.permission;if(p==='granted'){el.innerHTML='<span style="color:var(--ok)">✅ Notifiche attive</span>';document.getElementById('notifBtn').classList.add('active');}else if(p==='denied')el.innerHTML='<span style="color:var(--danger)">❌ Bloccate — abilita nelle impostazioni del browser</span>';else el.innerHTML='<span style="color:var(--warn)">⚠️ Non ancora abilitate</span>';}
+async function requestNotifPermission(){if(!('Notification'in window)){showToast('❌ Non supportato');return;}const p=await Notification.requestPermission();updateNotifStatus();if(p==='granted'){showToast('🔔 Notifiche abilitate!');closeNotifModal();scheduleNotifications();}else showToast('❌ Permesso negato');}
+function toggleNotif(k){appData.notifToggles[k]=!appData.notifToggles[k];saveData(appData);updateNotifToggles();}
+function updateNotifToggles(){['feed','esc','deep'].forEach(k=>{const el=document.getElementById('toggle-'+k);appData.notifToggles[k]?el.classList.add('on'):el.classList.remove('on');});}
+function scheduleNotifications(){if(Notification.permission==='granted')checkAndNotify();}
+let lastNotifTime={};
+function checkAndNotify(){const d=appData;if(d.notifToggles.feed){const lf=d.feeding.length?d.feeding[d.feeding.length-1].date:null;const ds=daysSince(lf);if(ds>=d.intervals.feed){const ov=ds-d.intervals.feed;sendNotif(ov===0?'🐭 Giorno del pasto!':'🐭 Pasto in ritardo!',ov===0?'È ora di dare da mangiare al tuo serpente.':`In ritardo di ${ov} giorn${ov===1?'o':'i'}.`);}}if(d.notifToggles.esc){const le=d.maintenance.filter(m=>m.rimozione).slice(-1)[0]?.date;if(daysSince(le)>=d.intervals.esc)sendNotif('🧹 Pulizia escrementi','È ora di rimuovere gli escrementi dal terrario.');}if(d.notifToggles.deep){const ld=d.maintenance.filter(m=>m.profonda).slice(-1)[0]?.date;if(daysSince(ld)>=d.intervals.deep)sendNotif('🏠 Pulizia profonda','Tempo di cambiare il substrato!');}}
+function sendNotif(title,body){const now=Date.now();if(lastNotifTime[title]&&(now-lastNotifTime[title])<3600000)return;lastNotifTime[title]=now;try{new Notification(title,{body,tag:title,renotify:false});}catch(e){}}
 
-function renderHome() {
-  renderAlerts();
-  renderStatusGrid();
-  renderBarChart();
-}
-
-function daysSince(dateStr) {
-  if (!dateStr) return 9999;
-  const d = new Date(dateStr);
-  const now = new Date();
-  return Math.floor((now - d) / 86400000);
-}
-
-function renderAlerts() {
-  const d = appData;
-  const alerts = [];
-  const lastFeed = d.feeding.length ? d.feeding[d.feeding.length - 1].date : null;
-  const lastEsc  = d.maintenance.length ? d.maintenance.filter(m => m.rimozione).slice(-1)[0]?.date : null;
-  const lastDeep = d.maintenance.length ? d.maintenance.filter(m => m.profonda).slice(-1)[0]?.date : null;
-
-  const dsFeed = daysSince(lastFeed);
-  const dsEsc  = daysSince(lastEsc);
-  const dsDeep = daysSince(lastDeep);
-
-  if (dsFeed >= d.intervals.feed) {
-    const days = dsFeed - d.intervals.feed;
-    alerts.push({ type: days > 2 ? 'danger' : 'warn', icon: '🐭', text: days === 0 ? 'Oggi è il giorno del pasto!' : `Pasto in ritardo di ${days} giorn${days === 1 ? 'o' : 'i'}` });
-  } else {
-    const remaining = d.intervals.feed - dsFeed;
-    if (remaining <= 2) alerts.push({ type: 'warn', icon: '🐭', text: `Pasto tra ${remaining} giorn${remaining === 1 ? 'o' : 'i'}` });
-    else alerts.push({ type: 'ok', icon: '🐭', text: `Pasto tra ${remaining} giorni` });
-  }
-
-  if (dsEsc >= d.intervals.esc) {
-    alerts.push({ type: 'warn', icon: '🧹', text: 'Rimozione escrementi in scadenza!' });
-  }
-  if (dsDeep >= d.intervals.deep) {
-    alerts.push({ type: 'danger', icon: '🏠', text: 'Pulizia profonda necessaria!' });
-  }
-
-  const container = document.getElementById('alerts-container');
-  if (!alerts.length) { container.innerHTML = ''; return; }
-  container.innerHTML = alerts.map(a =>
-    `<div class="alert-box ${a.type}">${a.icon} ${a.text}</div>`
-  ).join('');
-}
-
-function renderStatusGrid() {
-  const d = appData;
-  const lastFeed = d.feeding.length ? d.feeding[d.feeding.length - 1] : null;
-  const lastWeight = d.weights.length ? d.weights[d.weights.length - 1] : null;
-  const lastMuta = d.mute.length ? d.mute[d.mute.length - 1] : null;
-  const dsLastFeed = daysSince(lastFeed?.date);
-  const nextFeed = Math.max(0, d.intervals.feed - dsLastFeed);
-
-  const grid = document.getElementById('status-grid');
-  grid.innerHTML = `
-    <div class="status-item">
-      <div class="status-label">Ultimo pasto</div>
-      <div class="status-value ${dsLastFeed > d.intervals.feed ? 'danger' : ''}">${dsLastFeed < 9999 ? dsLastFeed : '—'}</div>
-      <div class="status-unit">giorni fa</div>
-    </div>
-    <div class="status-item">
-      <div class="status-label">Prossimo pasto</div>
-      <div class="status-value ${nextFeed === 0 ? 'warn' : ''}">${lastFeed ? nextFeed : '—'}</div>
-      <div class="status-unit">giorni</div>
-    </div>
-    <div class="status-item">
-      <div class="status-label">Peso attuale</div>
-      <div class="status-value">${lastWeight ? lastWeight.peso : d.snake.weight || '—'}</div>
-      <div class="status-unit">grammi</div>
-    </div>
-    <div class="status-item">
-      <div class="status-label">Ultima muta</div>
-      <div class="status-value" style="font-size:14px">${lastMuta ? formatDate(lastMuta.date) : '—'}</div>
-      <div class="status-unit">${lastMuta ? `${daysSince(lastMuta.date)} giorni fa` : ''}</div>
-    </div>
-  `;
-}
-
-function renderBarChart() {
-  const d = appData;
-  const chart = document.getElementById('home-bar-chart');
-  const recent = d.feeding.slice(-6);
-  if (!recent.length) { chart.innerHTML = '<div class="empty-state"><p>Nessun pasto registrato</p></div>'; return; }
-  chart.innerHTML = recent.map(f => {
-    const pct = Math.round(f.percent || (d.snake.weight ? (f.weight / d.snake.weight * 100) : 0));
-    const isOk = f.esito === 'Mangiato';
-    return `
-      <div class="bar-row">
-        <div class="bar-label">${formatDate(f.date)}</div>
-        <div class="bar-track">
-          <div class="bar-fill ${!isOk ? 'warn' : ''}" style="width:${Math.min(100, pct * 3)}%"></div>
-        </div>
-        <div class="bar-val">${f.esito === 'Mangiato' ? '✅' : '❌'}</div>
-      </div>
-    `;
-  }).join('');
-}
-
-// ============================================================
-// FEEDING
-// ============================================================
-
-function renderFeed() {
-  const tbody = document.getElementById('feed-tbody');
-  const rows = [...appData.feeding].reverse();
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--text-dim); padding:24px">Nessun pasto</td></tr>';
-    return;
-  }
-  tbody.innerHTML = rows.map(f => {
-    const pct = appData.snake.weight ? (f.weight / appData.snake.weight * 100).toFixed(1) : '—';
-    const badge = f.esito === 'Mangiato' ? 'badge-ok' : f.esito === 'Parziale' ? 'badge-warn' : 'badge-danger';
-    return `<tr>
-      <td>${formatDate(f.date)}</td>
-      <td>${f.weight}g</td>
-      <td>${pct}%</td>
-      <td><span class="badge ${badge}">${f.esito}</span></td>
-      <td style="color:var(--text-dim); font-size:11px">${f.note || ''}</td>
-    </tr>`;
-  }).join('');
-}
-
-function openAddFeed() {
-  document.getElementById('feed-add-form').style.display = 'block';
-  document.getElementById('feed-date').value = todayISO();
-  document.getElementById('feed-weight').value = '';
-  document.getElementById('feed-note').value = '';
-}
-function closeFeedForm() { document.getElementById('feed-add-form').style.display = 'none'; }
-
-function saveFeed() {
-  const date = document.getElementById('feed-date').value;
-  const weight = parseFloat(document.getElementById('feed-weight').value);
-  const esito = document.getElementById('feed-esito').value;
-  const defecazione = document.getElementById('feed-defecazione').value === 'true';
-  const note = document.getElementById('feed-note').value.trim();
-  if (!date || isNaN(weight)) { showToast('⚠️ Inserisci data e peso'); return; }
-  appData.feeding.push({ date, weight, esito, defecazione, note });
-  appData.feeding.sort((a, b) => a.date.localeCompare(b.date));
-  saveData(appData);
-  closeFeedForm();
-  renderFeed();
-  scheduleNotifications();
-  showToast('✅ Pasto salvato!');
-}
-
-// ============================================================
-// MAINTENANCE
-// ============================================================
-
-function renderMaint() {
-  const tbody = document.getElementById('maint-tbody');
-  const rows = [...appData.maintenance].reverse();
-  if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-dim); padding:24px">Nessuna manutenzione</td></tr>';
-    return;
-  }
-  tbody.innerHTML = rows.map(m => `<tr>
-    <td>${formatDate(m.date)}</td>
-    <td><span class="badge ${m.rimozione ? 'badge-ok' : 'badge-muted'}">${m.rimozione ? 'Sì' : 'No'}</span></td>
-    <td><span class="badge ${m.profonda ? 'badge-ok' : 'badge-muted'}">${m.profonda ? 'Sì' : 'No'}</span></td>
-  </tr>`).join('');
-}
-
-function openAddMaint() {
-  document.getElementById('maint-add-form').style.display = 'block';
-  document.getElementById('maint-date').value = todayISO();
-}
-function closeMaintForm() { document.getElementById('maint-add-form').style.display = 'none'; }
-
-function saveMaint() {
-  const date = document.getElementById('maint-date').value;
-  const rimozione = document.getElementById('maint-esc').value === 'true';
-  const profonda = document.getElementById('maint-deep').value === 'true';
-  if (!date) { showToast('⚠️ Inserisci la data'); return; }
-  appData.maintenance.push({ date, rimozione, profonda });
-  appData.maintenance.sort((a, b) => a.date.localeCompare(b.date));
-  saveData(appData);
-  closeMaintForm();
-  renderMaint();
-  scheduleNotifications();
-  showToast('✅ Manutenzione salvata!');
-}
-
-// ============================================================
-// HEALTH
-// ============================================================
-
-function renderHealth() {
-  const lastW = appData.weights.length ? appData.weights[appData.weights.length - 1] : null;
-  const lastM = appData.mute.length ? appData.mute[appData.mute.length - 1] : null;
-  document.getElementById('current-weight').textContent = lastW ? lastW.peso : '—';
-  document.getElementById('last-muta').textContent = lastM ? formatDate(lastM.date) : '—';
-
-  const pesoTbody = document.getElementById('peso-tbody');
-  const pesos = [...appData.weights].reverse();
-  pesoTbody.innerHTML = pesos.map((w, i) => {
-    const prev = pesos[i + 1];
-    const delta = prev ? (w.peso - prev.peso) : null;
-    const deltaStr = delta !== null ? `<span style="color:${delta >= 0 ? 'var(--accent)' : 'var(--danger)'}">${delta >= 0 ? '+' : ''}${delta}g</span>` : '—';
-    return `<tr><td>${formatDate(w.date)}</td><td>${w.peso}g</td><td>${deltaStr}</td></tr>`;
-  }).join('') || '<tr><td colspan="3" style="text-align:center; color:var(--text-dim); padding:24px">Nessun dato peso</td></tr>';
-
-  const mutaTbody = document.getElementById('muta-tbody');
-  const mute = [...appData.mute].reverse();
-  mutaTbody.innerHTML = mute.map(m =>
-    `<tr><td>${formatDate(m.date)}</td><td><span class="badge badge-ok">${m.completa}</span></td></tr>`
-  ).join('') || '<tr><td colspan="2" style="text-align:center; color:var(--text-dim); padding:24px">Nessuna muta</td></tr>';
-}
-
-document.getElementById('health-type').addEventListener('change', function() {
-  document.getElementById('health-peso-group').style.display = this.value === 'peso' ? '' : 'none';
-  document.getElementById('health-muta-group').style.display = this.value === 'muta' ? '' : 'none';
-});
-
-function openAddHealth() {
-  document.getElementById('health-add-form').style.display = 'block';
-  document.getElementById('health-date').value = todayISO();
-  document.getElementById('health-peso').value = '';
-}
-function closeHealthForm() { document.getElementById('health-add-form').style.display = 'none'; }
-
-function saveHealth() {
-  const type = document.getElementById('health-type').value;
-  const date = document.getElementById('health-date').value;
-  if (!date) { showToast('⚠️ Inserisci la data'); return; }
-  if (type === 'peso') {
-    const peso = parseFloat(document.getElementById('health-peso').value);
-    if (isNaN(peso)) { showToast('⚠️ Inserisci il peso'); return; }
-    appData.weights.push({ date, peso });
-    appData.weights.sort((a, b) => a.date.localeCompare(b.date));
-    appData.snake.weight = peso;
-  } else {
-    const completa = document.getElementById('health-muta').value;
-    appData.mute.push({ date, completa });
-    appData.mute.sort((a, b) => a.date.localeCompare(b.date));
-  }
-  saveData(appData);
-  closeHealthForm();
-  renderHealth();
-  showToast('✅ Dato salvato!');
-}
-
-// ============================================================
-// SETTINGS
-// ============================================================
-
-function renderSettings() {
-  document.getElementById('snake-name').value = appData.snake.name || '';
-  document.getElementById('snake-species').value = appData.snake.species || '';
-  document.getElementById('snake-weight').value = appData.snake.weight || '';
-  document.getElementById('interval-feed').value = appData.intervals.feed;
-  document.getElementById('interval-esc').value = appData.intervals.esc;
-  document.getElementById('interval-deep').value = appData.intervals.deep;
-}
-
-function saveSettings() {
-  appData.snake.name = document.getElementById('snake-name').value.trim();
-  appData.snake.species = document.getElementById('snake-species').value.trim();
-  appData.snake.weight = parseFloat(document.getElementById('snake-weight').value) || appData.snake.weight;
-  saveData(appData);
-  showToast('✅ Impostazioni salvate!');
-}
-
-function saveIntervals() {
-  appData.intervals.feed = parseInt(document.getElementById('interval-feed').value) || 7;
-  appData.intervals.esc = parseInt(document.getElementById('interval-esc').value) || 7;
-  appData.intervals.deep = parseInt(document.getElementById('interval-deep').value) || 30;
-  saveData(appData);
-  scheduleNotifications();
-  showToast('✅ Intervalli salvati!');
-}
-
-function exportData() {
-  const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'snake-tracker-backup.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('📁 Esportazione completata!');
-}
-
-// ============================================================
-// NOTIFICATIONS
-// ============================================================
-
-function openNotifModal() {
-  document.getElementById('notifModal').classList.add('open');
-  updateNotifStatus();
-  updateNotifToggles();
-}
-function closeNotifModal() { document.getElementById('notifModal').classList.remove('open'); }
-
-function updateNotifStatus() {
-  const status = document.getElementById('notif-status');
-  if (!('Notification' in window)) {
-    status.textContent = '❌ Il tuo browser non supporta le notifiche.';
-    return;
-  }
-  const perm = Notification.permission;
-  if (perm === 'granted') {
-    status.innerHTML = '<span style="color:var(--accent)">✅ Notifiche abilitate</span>';
-    document.getElementById('notifBtn').classList.add('active');
-  } else if (perm === 'denied') {
-    status.innerHTML = '<span style="color:var(--danger)">❌ Notifiche bloccate. Abilita nelle impostazioni del browser.</span>';
-  } else {
-    status.innerHTML = '<span style="color:var(--warn)">⚠️ Notifiche non ancora abilitate. Premi il pulsante qui sotto.</span>';
-  }
-}
-
-async function requestNotifPermission() {
-  if (!('Notification' in window)) { showToast('❌ Browser non supportato'); return; }
-  const perm = await Notification.requestPermission();
-  updateNotifStatus();
-  if (perm === 'granted') {
-    showToast('🔔 Notifiche abilitate!');
-    closeNotifModal();
-    scheduleNotifications();
-  } else {
-    showToast('❌ Permesso negato');
-  }
-}
-
-function toggleNotif(key) {
-  appData.notifToggles[key] = !appData.notifToggles[key];
-  saveData(appData);
-  updateNotifToggles();
-}
-
-function updateNotifToggles() {
-  ['feed', 'esc', 'deep'].forEach(k => {
-    const el = document.getElementById('toggle-' + k);
-    if (appData.notifToggles[k]) el.classList.add('on');
-    else el.classList.remove('on');
-  });
-}
-
-function scheduleNotifications() {
-  if (Notification.permission !== 'granted') return;
-  checkAndNotify();
-}
-
-function checkAndNotify() {
-  const d = appData;
-
-  // Feed check
-  if (d.notifToggles.feed) {
-    const lastFeed = d.feeding.length ? d.feeding[d.feeding.length - 1].date : null;
-    const ds = daysSince(lastFeed);
-    if (ds >= d.intervals.feed) {
-      const overdue = ds - d.intervals.feed;
-      const title = overdue === 0 ? '🐭 Giorno del pasto!' : `🐭 Pasto in ritardo!`;
-      const body = overdue === 0
-        ? 'Oggi è il momento di dare da mangiare al tuo serpente.'
-        : `Il pasto è in ritardo di ${overdue} giorn${overdue === 1 ? 'o' : 'i'}.`;
-      sendNotification(title, body);
-    }
-  }
-
-  // Escrementi
-  if (d.notifToggles.esc) {
-    const lastEsc = d.maintenance.filter(m => m.rimozione).slice(-1)[0]?.date;
-    if (daysSince(lastEsc) >= d.intervals.esc) {
-      sendNotification('🧹 Pulizia escrementi', 'È ora di rimuovere gli escrementi dal terrario.');
-    }
-  }
-
-  // Profonda
-  if (d.notifToggles.deep) {
-    const lastDeep = d.maintenance.filter(m => m.profonda).slice(-1)[0]?.date;
-    if (daysSince(lastDeep) >= d.intervals.deep) {
-      sendNotification('🏠 Pulizia profonda', 'È tempo di fare la pulizia profonda del terrario!');
-    }
-  }
-}
-
-let lastNotifTime = {};
-function sendNotification(title, body) {
-  const key = title;
-  const now = Date.now();
-  if (lastNotifTime[key] && (now - lastNotifTime[key]) < 3600000) return; // max 1 volta/ora
-  lastNotifTime[key] = now;
-  try {
-    new Notification(title, {
-      body,
-      icon: 'https://emojicdn.elk.sh/🐍?style=apple',
-      badge: 'https://emojicdn.elk.sh/🐍?style=apple',
-      tag: key,
-      renotify: false
-    });
-  } catch(e) {}
-}
-
-// ============================================================
-// UTILS
-// ============================================================
-
-function formatDate(dateStr) {
-  if (!dateStr) return '—';
-  const [y, m, d] = dateStr.split('-');
-  return `${d}/${m}/${y}`;
-}
-
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ============================================================
-// SERVICE WORKER REGISTRATION
-// ============================================================
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
-}
-
-// ============================================================
-// INIT
-// ============================================================
-
-renderHome();
-updateNotifToggles();
-
-// Check notifications every 4 hours while app is open
-setInterval(() => {
-  if (Notification.permission === 'granted') checkAndNotify();
-}, 4 * 60 * 60 * 1000);
-
-// Initial check after 2s
-setTimeout(() => {
-  if (Notification.permission === 'granted') checkAndNotify();
-}, 2000);
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+renderHome();updateNotifToggles();
+setInterval(()=>{if(Notification.permission==='granted')checkAndNotify();},4*60*60*1000);
+setTimeout(()=>{if(Notification.permission==='granted')checkAndNotify();},2000);
 </script>
 </body>
 </html>

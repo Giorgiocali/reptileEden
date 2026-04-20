@@ -1,6 +1,6 @@
 // Snake Tracker - Service Worker v1.0
 const CACHE_NAME = 'snake-tracker-v1';
-const ASSETS = ['/', '/index.html'];
+const ASSETS = ['/snake-tracker/', '/snake-tracker/index.html'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(ASSETS)).catch(() => {}));
@@ -18,7 +18,7 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(r => r || fetch(e.request)).catch(() => caches.match('/index.html'))
+    caches.match(e.request).then(r => r || fetch(e.request)).catch(() => caches.match('/snake-tracker/index.html'))
   );
 });
 
@@ -63,7 +63,7 @@ self.addEventListener('notificationclick', e => {
   e.waitUntil(
     self.clients.matchAll({ type: 'window' }).then(clients => {
       if (clients.length > 0) { clients[0].focus(); return; }
-      return self.clients.openWindow('/');
+      return self.clients.openWindow('/snake-tracker/');
     })
   );
 });
